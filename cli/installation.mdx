@@ -7,18 +7,12 @@ icon: "download"
 ## Install
 
 ```bash
-cd cli
-pnpm install
-pnpm build
+npm install -g @boxcrew/cli
 ```
 
-The CLI binary is `bx`. Create a global alias for convenience:
+Requires Node.js 20 or later. After installation, the `bx` command is available globally.
 
-```bash
-alias bx="node /path/to/cli/dist/index.js"
-```
-
-## Authenticate
+## Log in
 
 ### Browser login (recommended)
 
@@ -26,14 +20,7 @@ alias bx="node /path/to/cli/dist/index.js"
 bx login
 ```
 
-This opens your browser to the BoxCrew dashboard. An API key is created automatically and sent back to the CLI — no copy-pasting required.
-
-**How it works:**
-
-1. The CLI starts a temporary local HTTP server
-2. Opens `https://boxcrew.ai/cli-auth?port=PORT` in your browser
-3. An API key named "CLI" is created and sent back
-4. The key is stored in the CLI config
+Opens your browser to the BoxCrew dashboard. Once you authenticate, an API key is created and saved to the CLI automatically — no copy-pasting.
 
 | Flag | Description | Default |
 |------|-------------|---------|
@@ -42,13 +29,13 @@ This opens your browser to the BoxCrew dashboard. An API key is created automati
 
 ### Paste login (headless environments)
 
-For SSH sessions, CI/CD, or environments without a browser:
+For SSH, CI/CD, or machines without a browser:
 
 ```bash
 bx login --paste
 ```
 
-This prompts you to paste an API key manually. Create one first in the dashboard under **Settings > API Keys**.
+You'll be prompted to paste an API key. Create one first in the [dashboard](https://boxcrew.ai) under **Settings > API Keys**.
 
 ### Environment variables
 
@@ -57,10 +44,8 @@ This prompts you to paste an API key manually. Create one first in the dashboard
 | `BOXCREW_API_URL` | Override the BoxCrew API URL |
 | `BOXCREW_FRONTEND_URL` | Override the BoxCrew frontend URL |
 
-## Logout
+## Log out
 
 ```bash
 bx logout
 ```
-
-Removes stored credentials from the CLI config.

@@ -1,84 +1,83 @@
 ---
 title: "Quickstart"
-description: "Create your first AI agent in under a minute"
+description: "Create and chat with your first agent"
 ---
 
 ## Using the CLI
 
 <Steps>
-  <Step title="Install and authenticate">
+  <Step title="Install the CLI">
     ```bash
-    # Install the CLI
-    cd cli && pnpm install && pnpm build
-    alias bx="node $(pwd)/dist/index.js"
-
-    # Log in (opens browser)
+    npm install -g @boxcrew/cli
+    ```
+  </Step>
+  <Step title="Log in">
+    ```bash
     bx login
     ```
+    This opens your browser. Once you log in, the CLI is authenticated automatically.
   </Step>
   <Step title="Create an agent">
     ```bash
     bx agents create my-agent
     ```
-
-    This provisions a sandboxed VM with Claude Code installed. It takes about 30 seconds.
-  </Step>
-  <Step title="Chat with your agent">
+    BoxCrew provisions a sandboxed VM and installs Claude Code. This takes about 30 seconds. You can check progress with:
     ```bash
-    bx agents chat my-agent "Write a Python script that prints hello world"
+    bx api GET /agents/my-agent/install-status
     ```
-
-    The response streams back in real-time.
+  </Step>
+  <Step title="Chat">
+    ```bash
+    bx agents chat my-agent "Create a Python CLI that fetches weather data from wttr.in"
+    ```
+    The agent writes code, saves files, and streams its response in real-time. Everything it creates persists on its VM filesystem.
   </Step>
 </Steps>
 
 ## Using the API
 
-If you prefer to integrate directly, use the REST API with an API key.
-
 <Steps>
   <Step title="Get an API key">
-    Create one from the [dashboard](https://boxcrew.ai) under **Settings > API Keys**, or with the CLI:
-
+    Create one from the [dashboard](https://boxcrew.ai) under **Settings > API Keys**, or via the CLI:
     ```bash
     bx keys create --name "My Key"
     ```
-
-    Save the key — it's only shown once.
+    <Warning>The full key (`bxk_...`) is shown only once. Save it immediately.</Warning>
   </Step>
   <Step title="Create an agent">
     ```bash
     curl -X POST https://api.boxcrew.ai/agents \
-      -H "Authorization: Bearer bxk_your_key_here" \
+      -H "Authorization: Bearer $BOXCREW_API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"name": "my-agent", "runtime": "claude-code"}'
     ```
   </Step>
-  <Step title="Chat with your agent">
+  <Step title="Chat (streaming)">
     ```bash
     curl -N -X POST https://api.boxcrew.ai/agents/my-agent/chat \
-      -H "Authorization: Bearer bxk_your_key_here" \
+      -H "Authorization: Bearer $BOXCREW_API_KEY" \
       -H "Content-Type: application/json" \
-      -d '{"message": "Write a Python script that prints hello world"}'
+      -d '{"message": "Create a Python CLI that fetches weather data from wttr.in"}'
     ```
 
-    The response is an SSE stream:
+    The response is an [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) stream:
 
     ```
-    data: {"type":"response.output_text.delta","delta":"Hello"}
-    data: {"type":"response.output_text.delta","delta":"! Here's"}
-    data: {"type":"response.completed"}
+    data: {"type":"response.created","response":{...}}
+    data: {"type":"response.output_text.delta","delta":"I'll create"}
+    data: {"type":"response.output_text.delta","delta":" a Python CLI..."}
+    data: {"type":"response.completed","response":{...}}
     ```
   </Step>
 </Steps>
 
-## Next steps
+## What next?
 
 <CardGroup cols={2}>
   <Card title="CLI commands" icon="terminal" href="/cli/commands">
-    Full reference for all bx commands.
+    Full reference — agents, keys, raw API calls.
   </Card>
   <Card title="API reference" icon="code" href="/api-reference/introduction">
-    Complete REST API documentation.
+    All endpoints — agents, chat, webhooks, crons, billing.
   </Card>
 </CardGroup>

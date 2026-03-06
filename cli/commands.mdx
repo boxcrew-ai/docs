@@ -1,12 +1,10 @@
 ---
 title: "Commands"
-description: "Complete reference for bx CLI commands"
+description: "bx CLI command reference"
 icon: "rectangle-list"
 ---
 
 ## bx agents
-
-Manage your agents.
 
 ### List agents
 
@@ -14,7 +12,7 @@ Manage your agents.
 bx agents list
 ```
 
-Returns a table of all agents with name, runtime, model, and status.
+Shows all your agents with name, runtime, model, and status.
 
 ### Create an agent
 
@@ -24,23 +22,28 @@ bx agents create <name> [options]
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `-r, --runtime <runtime>` | Agent runtime | `claude-code` |
+| `-r, --runtime <runtime>` | Runtime: `claude-code`, `opencode`, or `openclaw` | `claude-code` |
 | `-m, --model <model>` | Model override | Runtime default |
-| `-i, --instructions <text>` | Agent instructions | None |
+| `-i, --instructions <text>` | System instructions for the agent | None |
 
-Available runtimes: `claude-code`, `opencode`, `openclaw`
-
-**Examples:**
+Agent names must be 3–30 characters, start with a letter, and contain only letters, numbers, and hyphens.
 
 ```bash
-# Create a Claude Code agent
 bx agents create my-agent
-
-# Create an OpenCode agent with a specific model
 bx agents create research-bot --runtime opencode --model gpt-4o
+bx agents create reviewer --instructions "Review code for security issues"
+```
 
-# Create an agent with instructions
-bx agents create code-reviewer --instructions "Review code for security issues"
+### Chat with an agent
+
+```bash
+bx agents chat <name> <message>
+```
+
+Sends a message and streams the response. The agent can write files, run commands, and perform actions inside its VM while responding.
+
+```bash
+bx agents chat my-agent "Write tests for the auth module"
 ```
 
 ### Delete an agent
@@ -49,33 +52,17 @@ bx agents create code-reviewer --instructions "Review code for security issues"
 bx agents delete <name>
 ```
 
-Permanently deletes the agent and its VM.
-
-### Chat with an agent
-
-```bash
-bx agents chat <name> <message>
-```
-
-Sends a message and streams the response in real-time.
-
-```bash
-bx agents chat my-agent "What files are in the current directory?"
-```
+Permanently destroys the agent and its VM, including all files.
 
 ---
 
 ## bx keys
-
-Manage API keys.
 
 ### List keys
 
 ```bash
 bx keys list
 ```
-
-Returns a table of all API keys with name, key prefix, creation date, and last used date.
 
 ### Create a key
 
@@ -85,22 +72,15 @@ bx keys create [options]
 
 | Option | Description |
 |--------|-------------|
-| `-n, --name <name>` | Human-readable name for the key |
-| `-e, --expires <date>` | Expiration date (ISO 8601 format) |
-
-**Examples:**
+| `-n, --name <name>` | Name for the key |
+| `-e, --expires <date>` | Expiration date (ISO 8601) |
 
 ```bash
-# Create a named key
-bx keys create --name "CI/CD Pipeline"
-
-# Create a key with expiration
-bx keys create --name "Temp Key" --expires "2026-12-31T00:00:00Z"
+bx keys create --name "CI/CD"
+bx keys create --name "Temp" --expires "2026-12-31T00:00:00Z"
 ```
 
-<Warning>
-The full key (starting with `bxk_`) is shown only once on creation. Store it securely.
-</Warning>
+<Warning>The full key (`bxk_...`) is shown only once. Store it somewhere safe.</Warning>
 
 ### Revoke a key
 
@@ -108,16 +88,14 @@ The full key (starting with `bxk_`) is shown only once on creation. Store it sec
 bx keys revoke <id>
 ```
 
-Permanently revokes the key. Use `bx keys list` to find the key ID.
-
 ---
 
 ## bx api
 
-Make raw API requests, similar to `gh api`.
+Make raw API requests. Works like `gh api`.
 
 ```bash
-bx api [options] <method> <path>
+bx api <method> <path> [options]
 ```
 
 | Option | Description |
@@ -125,21 +103,19 @@ bx api [options] <method> <path>
 | `-d, --data <json>` | JSON request body |
 | `-H, --header <header...>` | Additional headers (`key:value`) |
 
-**Examples:**
-
 ```bash
 # List agents
 bx api GET /agents
 
 # Create an agent
-bx api POST /agents -d '{"name":"test-agent","runtime":"claude-code"}'
+bx api POST /agents -d '{"name":"test","runtime":"claude-code"}'
 
 # Get billing info
 bx api GET /billing
 
-# Delete an agent
-bx api DELETE /agents/my-agent
-
 # Check install status
 bx api GET /agents/my-agent/install-status
+
+# Delete an agent
+bx api DELETE /agents/my-agent
 ```

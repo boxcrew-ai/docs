@@ -1,37 +1,78 @@
 ---
-title: "Introduction"
-description: "BoxCrew REST API overview"
+title: "API Reference"
+description: "BoxCrew REST API"
 ---
 
-Base URL: `https://api.boxcrew.ai`
+## Base URL
 
-Interactive docs: [https://api.boxcrew.ai/docs](https://api.boxcrew.ai/docs)
+```
+https://api.boxcrew.ai
+```
 
 ## Authentication
 
-All API endpoints require authentication via the `Authorization` header.
-
-### API key
-
-Create an API key from the [dashboard](https://boxcrew.ai) or with the [CLI](/cli/commands#create-a-key). Keys start with `bxk_`.
+Authenticate with an API key in the `Authorization` header. Create keys from the [dashboard](https://boxcrew.ai) or with [`bx keys create`](/cli/commands#create-a-key).
 
 ```bash
 curl https://api.boxcrew.ai/agents \
   -H "Authorization: Bearer bxk_your_key_here"
 ```
 
-### Supabase JWT
+## Streaming (SSE)
 
-If you're building on top of BoxCrew's frontend auth, you can also use a Supabase access token directly:
+`POST /agents/{name}/chat` returns a [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) stream. Use `curl -N` or an SSE client to consume it.
 
 ```bash
-curl https://api.boxcrew.ai/agents \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+curl -N -X POST https://api.boxcrew.ai/agents/my-agent/chat \
+  -H "Authorization: Bearer $BOXCREW_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello"}'
 ```
 
-## Errors
+Events follow the [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses) format:
 
-The API returns standard HTTP status codes. Error responses include a JSON body:
+```
+data: {"type":"response.created","response":{...}}
+data: {"type":"response.in_progress"}
+data: {"type":"response.output_text.delta","delta":"Hello! "}
+data: {"type":"response.output_text.delta","delta":"How can I help?"}
+data: {"type":"response.completed","response":{...}}
+```
+
+Key event types:
+
+| Event | Description |
+|-------|-------------|
+| `response.created` | Response initialized |
+| `response.in_progress` | Streaming started |
+| `response.output_text.delta` | Text chunk from the agent |
+| `response.reasoning_text.delta` | Thinking/reasoning chunk |
+| `response.function_call_arguments.delta` | Tool call arguments chunk |
+| `response.output_item.done` | An output item completed |
+| `response.completed` | Response finished |
+| `response.failed` | Response failed with error |
+
+### Reconnecting to a stream
+
+If your connection drops, reconnect with `GET /agents/{name}/chat/stream?since=N` where `N` is the last `sequence_number` you received. Events with a sequence number ≤ `N` are skipped.
+
+### Request body
+
+```json
+{
+  "message": "Your message to the agent",
+  "filePaths": ["/path/to/file"],
+  "fileMetadata": [{"filename": "data.csv", "mediaType": "text/csv"}]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `message` | string | Yes | The message to send |
+| `filePaths` | string[] | No | Paths to files on the agent's VM to include as context |
+| `fileMetadata` | object[] | No | Metadata for uploaded files |
+
+## Errors
 
 ```json
 {
@@ -43,30 +84,10 @@ The API returns standard HTTP status codes. Error responses include a JSON body:
 
 | Status | Meaning |
 |--------|---------|
-| `400` | Bad request — invalid parameters |
-| `401` | Unauthorized — missing or invalid auth |
-| `402` | Payment required — insufficient credits |
-| `403` | Forbidden — not allowed to access this resource |
+| `400` | Invalid parameters |
+| `401` | Missing or invalid auth |
+| `402` | Insufficient credits |
+| `403` | Access denied |
 | `404` | Not found |
-| `409` | Conflict — resource already exists |
-| `429` | Rate limited |
-| `500` | Internal server error |
-
-## Streaming
-
-The `POST /agents/{name}/chat` endpoint returns an [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) stream. Use `curl -N` or an SSE client library to consume it:
-
-```bash
-curl -N -X POST https://api.boxcrew.ai/agents/my-agent/chat \
-  -H "Authorization: Bearer bxk_your_key_here" \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Hello"}'
-```
-
-Each event is a JSON object on a `data:` line:
-
-```
-data: {"type":"response.output_text.delta","delta":"Hello"}
-data: {"type":"response.output_text.delta","delta":"! How can I help?"}
-data: {"type":"response.completed"}
-```
+| `409` | Resource already exists |
+| `500` | Server error |

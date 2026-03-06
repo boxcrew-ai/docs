@@ -1,54 +1,52 @@
 ---
-title: "Introduction"
-description: "Build and deploy AI agents in seconds"
+title: "BoxCrew"
+description: "Deploy AI coding agents that run in the cloud"
 ---
 
-BoxCrew is a multi-tenant AI agent platform. Create isolated agents running Claude Code, OpenCode, or OpenClaw inside sandboxed VMs — each with persistent filesystem, email, cron jobs, and webhook triggers.
+BoxCrew gives you AI agents that can actually do things. Each agent runs Claude Code (or OpenCode, or OpenClaw) inside its own sandboxed VM with a persistent filesystem. Agents can write and run code, send emails, browse the web, and manage files — all through a simple API.
+
+```bash
+# Install the CLI
+npm install -g @boxcrew/cli
+
+# Create an agent and start chatting
+bx login
+bx agents create my-agent
+bx agents chat my-agent "Set up a Node.js project with Express and write a REST API for a todo app"
+```
+
+## What can you build?
+
+- **Autonomous coding agents** — agents that write, test, and iterate on code inside their own VM
+- **Email-driven workflows** — each agent has its own email address; send it tasks and get results back
+- **Scheduled automations** — set up cron jobs to run agents on a schedule (daily reports, monitoring, data pipelines)
+- **Webhook-triggered pipelines** — connect GitHub, Slack, or any service to trigger agent work
 
 ## How it works
 
-1. **Create an agent** — pick a runtime (Claude Code, OpenCode, or OpenClaw) and a name
-2. **Chat** — send messages via the dashboard, CLI, or API and get streaming responses
-3. **Automate** — set up cron jobs, webhooks, and email triggers to run agents on autopilot
+Every agent is an isolated [Fly Sprite](https://fly.io/docs/sprites/) VM. When you create an agent, BoxCrew provisions a VM, installs the AI runtime, and gives you an endpoint to chat with it. The agent's filesystem persists across conversations — it remembers context, keeps files, and builds on previous work.
 
-Each agent runs inside a [Fly Sprite](https://fly.io/docs/sprites/) VM with its own persistent filesystem. Agents can execute code, read and write files, send emails, and browse the web.
+```
+You (CLI / API / Dashboard)
+  → BoxCrew API
+    → Fly Sprite VM (sandboxed)
+      → Claude Code / OpenCode / OpenClaw
+        → streams response back via SSE
+```
 
 ## Get started
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="rocket" href="/quickstart">
-    Create your first agent in under a minute.
+    Create and chat with your first agent in 60 seconds.
   </Card>
-  <Card title="Install the CLI" icon="terminal" href="/cli/installation">
-    Manage agents from your terminal with the bx CLI.
+  <Card title="CLI reference" icon="terminal" href="/cli/commands">
+    All bx commands with options and examples.
   </Card>
   <Card title="API reference" icon="code" href="/api-reference/introduction">
-    Integrate BoxCrew into your apps with the REST API.
+    REST API for agents, chat, billing, webhooks, and crons.
   </Card>
-  <Card title="CLI commands" icon="rectangle-list" href="/cli/commands">
-    Full reference for all bx commands.
-  </Card>
-</CardGroup>
-
-## Key features
-
-<CardGroup cols={3}>
-  <Card title="Streaming chat" icon="comments">
-    SSE-based real-time streaming with session management.
-  </Card>
-  <Card title="File access" icon="folder-open">
-    Browse, upload, and read files on the agent's filesystem.
-  </Card>
-  <Card title="Email" icon="envelope">
-    Each agent gets a unique email address for sending and receiving mail.
-  </Card>
-  <Card title="Cron jobs" icon="clock">
-    Schedule recurring tasks with standard cron expressions.
-  </Card>
-  <Card title="Webhooks" icon="webhook">
-    Trigger agents from external services via unique webhook URLs.
-  </Card>
-  <Card title="Multi-runtime" icon="microchip">
-    Choose between Claude Code, OpenCode, and OpenClaw runtimes.
+  <Card title="Install the CLI" icon="download" href="/cli/installation">
+    Set up the bx CLI and authenticate.
   </Card>
 </CardGroup>
