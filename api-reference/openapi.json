@@ -1,217 +1,5448 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
+  "openapi": "3.0.0",
   "paths": {
-    "/plants": {
+    "/billing": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "operationId": "BillingController_getBillingInfo",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingInfoDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get billing info for the current organization",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/billing/checkout": {
+      "post": {
+        "operationId": "BillingController_createCheckout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stripe not configured"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a Stripe Checkout session",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/billing/portal": {
+      "post": {
+        "operationId": "BillingController_createPortal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PortalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Stripe not configured"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a Stripe Billing Portal session",
+        "tags": [
+          "billing"
+        ]
+      }
+    },
+    "/organizations": {
+      "get": {
+        "operationId": "OrganizationsController_listOrganizations",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/OrganizationDto"
                   }
                 }
               }
             }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all organizations the user belongs to",
+        "tags": [
+          "organizations"
+        ]
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "operationId": "OrganizationsController_createOrganization",
+        "parameters": [],
         "requestBody": {
-          "description": "Plant to add to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/CreateOrganizationDto"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/OrganizationDto"
                 }
               }
             }
           },
-          "400": {
-            "description": "unexpected error",
+          "201": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/OrganizationDto"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new organization",
+        "tags": [
+          "organizations"
+        ]
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/organizations/mine": {
+      "get": {
+        "operationId": "OrganizationsController_getMyOrganization",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user's organization",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/joinable": {
+      "get": {
+        "operationId": "OrganizationsController_listJoinableOrgs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JoinableOrganizationDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List organizations the user can join by email domain",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/my-invites": {
+      "get": {
+        "operationId": "OrganizationsController_listMyInvites",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InviteDetailDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List pending invites for the current user",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/members": {
+      "get": {
+        "operationId": "OrganizationsController_listMembers",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
+            "in": "path",
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationMemberDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List organization members",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}": {
+      "patch": {
+        "operationId": "OrganizationsController_updateOrganization",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update organization (owner only)",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/invites": {
+      "post": {
+        "operationId": "OrganizationsController_createInvite",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInviteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Send an invite to join the organization",
+        "tags": [
+          "organizations"
+        ]
+      },
+      "get": {
+        "operationId": "OrganizationsController_listInvites",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InviteResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List pending invites for the organization",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/invites/{inviteId}": {
+      "delete": {
+        "operationId": "OrganizationsController_cancelInvite",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "inviteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
             }
           }
         ],
         "responses": {
           "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel a pending invite",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/invites/{token}": {
+      "get": {
+        "operationId": "OrganizationsController_getInviteByToken",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/InviteDetailDto"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get invite details by token (public)",
+        "tags": [
+          "organizations"
+        ]
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
+    },
+    "/organizations/invites/{token}/accept": {
       "post": {
-        "description": "Information about a new plant added to the store",
+        "operationId": "OrganizationsController_acceptInvite",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptInviteResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptInviteResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Accept an invite",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/allowed-domains": {
+      "get": {
+        "operationId": "OrganizationsController_listAllowedDomains",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllowedDomainDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List allowed email domains for the organization",
+        "tags": [
+          "organizations"
+        ]
+      },
+      "post": {
+        "operationId": "OrganizationsController_addAllowedDomain",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/AddAllowedDomainDto"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllowedDomainDto"
+                }
+              }
+            }
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllowedDomainDto"
+                }
               }
             }
           }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
+        },
+        "security": [
+          {
+            "bearer": []
           }
-        }
+        ],
+        "summary": "Add an allowed email domain (owner/admin only)",
+        "tags": [
+          "organizations"
+        ]
       }
     },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+    "/organizations/{id}/allowed-domains/{domainId}": {
+      "delete": {
+        "operationId": "OrganizationsController_removeAllowedDomain",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "domainId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove an allowed email domain (owner/admin only)",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/join": {
+      "post": {
+        "operationId": "OrganizationsController_joinByDomain",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptInviteResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptInviteResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Join an organization by matching email domain",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/members/{userId}": {
+      "delete": {
+        "operationId": "OrganizationsController_removeMember",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove a member from the organization",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/organizations/{id}/leave": {
+      "post": {
+        "operationId": "OrganizationsController_leaveOrganization",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Leave the organization",
+        "tags": [
+          "organizations"
+        ]
+      }
+    },
+    "/models": {
+      "get": {
+        "operationId": "ModelsController_listModels",
+        "parameters": [
+          {
+            "name": "runtime",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "models": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "defaultModel": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List enabled models (OpenRouter allowlist)",
+        "tags": [
+          "models"
+        ]
+      }
+    },
+    "/agents": {
+      "get": {
+        "operationId": "AgentsController_listAgents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AgentResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all agents for the current organization",
+        "tags": [
+          "agents"
+        ]
+      },
+      "post": {
+        "operationId": "AgentsController_createAgent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Agent name already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new agent",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/opencode/models": {
+      "get": {
+        "operationId": "AgentsController_listOpencodeModels",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpencodeModelOptionsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List available opencode models",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/claude-code/models": {
+      "get": {
+        "operationId": "AgentsController_listClaudeCodeModels",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpencodeModelOptionsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List available claude-code models",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/openclaw/models": {
+      "get": {
+        "operationId": "AgentsController_listOpenclawModels",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpencodeModelOptionsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List available openclaw models",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/presets": {
+      "get": {
+        "operationId": "AgentsController_listPresets",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresetsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List available role and personality presets",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/active-chats": {
+      "get": {
+        "operationId": "AgentsController_getActiveChats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Active chat list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "agentId": {
+                        "type": "string"
+                      },
+                      "agentName": {
+                        "type": "string"
+                      },
+                      "startedAt": {
+                        "type": "number"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "running",
+                          "completed",
+                          "failed"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List agents with currently active (running) chats",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}": {
+      "get": {
+        "operationId": "AgentsController_getAgent",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a single agent by name",
+        "tags": [
+          "agents"
+        ]
+      },
+      "patch": {
+        "operationId": "AgentsController_updateAgent",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAgentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          },
+          "409": {
+            "description": "Agent name already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update an agent by name",
+        "tags": [
+          "agents"
+        ]
+      },
+      "delete": {
+        "operationId": "AgentsController_deleteAgent",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Agent deleted"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete an agent by name",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/install-status": {
+      "get": {
+        "operationId": "AgentsController_getInstallStatus",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentInstallStatusDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get agent install status",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/files/upload": {
+      "post": {
+        "operationId": "AgentsController_uploadFiles",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uploadDir",
+            "required": false,
+            "in": "query",
+            "description": "Target directory on sprite filesystem. Defaults to /home/sprite/uploads. Allowed: /home/sprite/uploads, /tmp/uploads",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "maxItems": 5,
+                    "description": "Files to upload (max 5, 50MB each)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadFilesResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadFilesResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload files to agent sprite filesystem",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/chat": {
+      "post": {
+        "description": "Send a message to the agent and receive a Server-Sent Events stream. The chat runs in the background \u2014 reconnect via GET :name/chat/stream. Event format follows the OpenAI Responses API streaming events (response.*).",
+        "operationId": "AgentsController_chat",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatAgentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSE stream",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Chat with an agent (SSE streaming response)",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/chat/stream": {
+      "get": {
+        "description": "Subscribe to the ongoing chat event stream. If the agent has an active chat, buffered events are replayed first, then live events are streamed. Use query parameter `since` to skip events with sequence_number <= since.",
+        "operationId": "AgentsController_chatStream",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SSE stream (catch-up + live events)",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No active chat for this agent"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reconnect to an active agent chat stream (SSE)",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/reset": {
+      "post": {
+        "operationId": "AgentsController_resetSession",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session reset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reset an agent session by name",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/stop": {
+      "post": {
+        "operationId": "AgentsController_stopChat",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat stop result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "stopped": {
+                      "type": "boolean"
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Stop the currently running chat task by name",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/files": {
+      "get": {
+        "operationId": "AgentsController_listFiles",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "file",
+                          "dir"
+                        ]
+                      },
+                      "size": {
+                        "type": "number"
+                      },
+                      "modified": {
+                        "type": "number",
+                        "description": "Unix timestamp"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List agent filesystem directory contents",
+        "tags": [
+          "agents"
+        ]
+      },
+      "delete": {
+        "operationId": "AgentsController_deleteFile",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "204": {
+            "description": "File deleted"
+          },
+          "400": {
+            "description": "Invalid path"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a file on agent filesystem",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/files/read": {
+      "get": {
+        "operationId": "AgentsController_readFile",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Read file content on agent (max 100KB)",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/emails": {
+      "get": {
+        "operationId": "AgentsController_listEmails",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "filename": {
+                        "type": "string"
+                      },
+                      "from": {
+                        "type": "string"
+                      },
+                      "to": {
+                        "type": "string"
+                      },
+                      "subject": {
+                        "type": "string"
+                      },
+                      "date": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List emails received by the agent",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/emails/sent": {
+      "get": {
+        "operationId": "AgentsController_listSentEmails",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sent email list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "filename": {
+                        "type": "string"
+                      },
+                      "from": {
+                        "type": "string"
+                      },
+                      "to": {
+                        "type": "string"
+                      },
+                      "subject": {
+                        "type": "string"
+                      },
+                      "date": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List emails sent by the agent",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/chat/sessions": {
+      "get": {
+        "operationId": "ChatHistoryController_listSessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatSessionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List chat sessions for the current user",
+        "tags": [
+          "chat-history"
+        ]
+      }
+    },
+    "/chat/sessions/{agentId}": {
+      "get": {
+        "operationId": "ChatHistoryController_getSession",
+        "parameters": [
+          {
+            "name": "agentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatSessionDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the chat session for a specific agent",
+        "tags": [
+          "chat-history"
+        ]
+      }
+    },
+    "/chat/sessions/{agentId}/messages": {
+      "get": {
+        "operationId": "ChatHistoryController_getMessages",
+        "parameters": [
+          {
+            "name": "agentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatHistoryMergeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Query chat history (supports incremental sync)",
+        "tags": [
+          "chat-history"
+        ]
+      }
+    },
+    "/templates": {
+      "get": {
+        "operationId": "TemplatesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemplateResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List user templates",
+        "tags": [
+          "templates"
+        ]
+      },
+      "post": {
+        "operationId": "TemplatesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTemplateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Template name already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a template",
+        "tags": [
+          "templates"
+        ]
+      }
+    },
+    "/templates/{id}": {
+      "get": {
+        "operationId": "TemplatesController_get",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get template by ID",
+        "tags": [
+          "templates"
+        ]
+      },
+      "patch": {
+        "operationId": "TemplatesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTemplateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Template not found"
+          },
+          "409": {
+            "description": "Template name already exists"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a template",
+        "tags": [
+          "templates"
+        ]
+      },
+      "delete": {
+        "operationId": "TemplatesController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Template deleted"
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a template",
+        "tags": [
+          "templates"
+        ]
+      }
+    },
+    "/user/profile": {
+      "get": {
+        "operationId": "UsersController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": [
+          "user"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update current user profile",
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/mark-invited": {
+      "post": {
+        "operationId": "UsersController_markInvited",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkInvitedResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkInvitedResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark current user as invited",
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/avatar": {
+      "post": {
+        "operationId": "UsersController_uploadAvatar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Avatar image (max 2MB)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload user avatar",
+        "tags": [
+          "user"
+        ]
+      },
+      "delete": {
+        "operationId": "UsersController_deleteAvatar",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete user avatar",
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/check-username/{username}": {
+      "get": {
+        "operationId": "UsersController_checkUsername",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsernameAvailabilityDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check username availability",
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/agents/{name}/webhooks": {
+      "post": {
+        "operationId": "WebhooksController_create",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a webhook for an agent",
+        "tags": [
+          "webhooks"
+        ]
+      },
+      "get": {
+        "operationId": "WebhooksController_list",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List webhooks for an agent",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/agents/{name}/webhooks/{id}": {
+      "delete": {
+        "operationId": "WebhooksController_remove",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a webhook",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
+    "/agents/{name}/crons": {
+      "post": {
+        "operationId": "CronsController_create",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCronDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CronResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a cron job for an agent",
+        "tags": [
+          "crons"
+        ]
+      },
+      "get": {
+        "operationId": "CronsController_list",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CronResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List cron jobs for an agent",
+        "tags": [
+          "crons"
+        ]
+      }
+    },
+    "/agents/{name}/crons/{id}": {
+      "patch": {
+        "operationId": "CronsController_update",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCronDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CronResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a cron job (enable/disable, change schedule, etc.)",
+        "tags": [
+          "crons"
+        ]
+      },
+      "delete": {
+        "operationId": "CronsController_remove",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a cron job",
+        "tags": [
+          "crons"
+        ]
+      }
+    },
+    "/agents/{name}/crons/{id}/runs": {
+      "get": {
+        "operationId": "CronsController_listRuns",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CronRunResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List execution history for a cron job",
+        "tags": [
+          "crons"
+        ]
+      }
+    },
+    "/api-keys": {
+      "post": {
+        "operationId": "ApiKeysController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateApiKeyResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new API key",
+        "tags": [
+          "api-keys"
+        ]
+      },
+      "get": {
+        "operationId": "ApiKeysController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApiKeyResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all API keys for the current user",
+        "tags": [
+          "api-keys"
+        ]
+      }
+    },
+    "/api-keys/{id}": {
+      "delete": {
+        "operationId": "ApiKeysController_revoke",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Revoke an API key",
+        "tags": [
+          "api-keys"
+        ]
       }
     }
-  }
+  },
+  "info": {
+    "title": "BoxCrew API",
+    "version": "1.0.0",
+    "description": "REST API for managing AI agents on BoxCrew."
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "https://api.boxcrew.ai"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "API Key (bxk_...) or Supabase JWT"
+      }
+    },
+    "schemas": {
+      "UsageSummaryDto": {
+        "type": "object",
+        "properties": {
+          "totalCostCents": {
+            "type": "number"
+          },
+          "totalInputTokens": {
+            "type": "number"
+          },
+          "totalOutputTokens": {
+            "type": "number"
+          },
+          "requestCount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "totalCostCents",
+          "totalInputTokens",
+          "totalOutputTokens",
+          "requestCount"
+        ]
+      },
+      "BillingInfoDto": {
+        "type": "object",
+        "properties": {
+          "tier": {
+            "type": "string",
+            "enum": [
+              "free",
+              "standard",
+              "pro",
+              "custom"
+            ]
+          },
+          "creditBalanceCents": {
+            "type": "number",
+            "description": "Credit balance in cents"
+          },
+          "creditBalanceDollars": {
+            "type": "string",
+            "description": "Credit balance in dollars"
+          },
+          "agentCount": {
+            "type": "number"
+          },
+          "maxAgents": {
+            "type": "number",
+            "description": "Max agents allowed (-1 means unlimited)"
+          },
+          "usage30d": {
+            "$ref": "#/components/schemas/UsageSummaryDto"
+          },
+          "planExpiresAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Plan expiration date (ISO string), null if free tier"
+          },
+          "billingCycle": {
+            "type": "string",
+            "description": "Organization billing cycle",
+            "nullable": true,
+            "enum": [
+              "monthly",
+              "yearly"
+            ]
+          },
+          "currentPeriodStart": {
+            "type": "string",
+            "nullable": true,
+            "description": "Current billing period start time (ISO string)"
+          },
+          "currentPeriodEnd": {
+            "type": "string",
+            "nullable": true,
+            "description": "Current billing period end time (ISO string)"
+          }
+        },
+        "required": [
+          "tier",
+          "creditBalanceCents",
+          "creditBalanceDollars",
+          "agentCount",
+          "maxAgents",
+          "usage30d"
+        ]
+      },
+      "CheckoutDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "subscription",
+              "credits",
+              "upgrade"
+            ],
+            "description": "Checkout type: subscription, credit top-up, or plan upgrade"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 500,
+            "maximum": 10000,
+            "description": "Top-up amount in cents. Only applicable when type=credits. Defaults to 500 ($5)."
+          },
+          "upgradeToPlan": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "pro"
+            ],
+            "description": "Target plan for upgrade. Required when type=upgrade. Determines the checkout amount (standard=$29, pro=$99) and upgrades the user tier on successful payment."
+          },
+          "months": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 12,
+            "description": "Number of months for the upgrade. 12 = annual billing with discount (pay for 10 months). Defaults to 1. Only applicable when type=upgrade."
+          },
+          "successUrl": {
+            "type": "string",
+            "description": "Redirect URL after successful payment. Passed by the frontend to support different deployment environments. Falls back to the backend BASE_URL if not provided."
+          },
+          "cancelUrl": {
+            "type": "string",
+            "description": "Redirect URL after payment cancellation. Passed by the frontend to support different deployment environments. Falls back to the backend BASE_URL if not provided."
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "CheckoutResponseDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Stripe Checkout page URL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "PortalDto": {
+        "type": "object",
+        "properties": {
+          "returnUrl": {
+            "type": "string",
+            "description": "Return URL after closing the portal. Passed by the frontend to support different deployment environments. Falls back to the backend BASE_URL if not provided."
+          }
+        }
+      },
+      "PortalResponseDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Stripe Billing Portal URL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "OrganizationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "isPersonal": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string",
+            "description": "Organization tier",
+            "enum": [
+              "free",
+              "standard",
+              "pro",
+              "custom"
+            ]
+          },
+          "tierEndAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingCycle": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "monthly",
+              "yearly"
+            ]
+          },
+          "currentPeriodStart": {
+            "type": "string",
+            "nullable": true
+          },
+          "currentPeriodEnd": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "ownerId",
+          "isPersonal",
+          "createdAt",
+          "tier",
+          "tierEndAt",
+          "billingCycle",
+          "currentPeriodStart",
+          "currentPeriodEnd"
+        ]
+      },
+      "CreateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "JoinableOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "matchedDomain": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "matchedDomain"
+        ]
+      },
+      "InviteDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "inviterName": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "expired": {
+            "type": "boolean"
+          },
+          "accepted": {
+            "type": "boolean"
+          },
+          "token": {
+            "type": "string",
+            "description": "Invite token for accepting the invite"
+          }
+        },
+        "required": [
+          "id",
+          "organizationName",
+          "organizationId",
+          "email",
+          "role",
+          "inviterName",
+          "expiresAt",
+          "expired",
+          "accepted",
+          "token"
+        ]
+      },
+      "OrganizationMemberDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "role",
+          "displayName",
+          "username",
+          "email",
+          "avatarUrl",
+          "createdAt"
+        ]
+      },
+      "UpdateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "minLength": 1,
+            "maxLength": 50
+          }
+        }
+      },
+      "CreateInviteDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email address to invite"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role to assign",
+            "enum": [
+              "admin",
+              "member"
+            ],
+            "default": "member"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "InviteResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "invitedBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "acceptedAt": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "organizationId",
+          "email",
+          "role",
+          "invitedBy",
+          "createdAt",
+          "expiresAt",
+          "acceptedAt"
+        ]
+      },
+      "AcceptInviteResponseDto": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "organizationId",
+          "organizationName",
+          "role"
+        ]
+      },
+      "AllowedDomainDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "organizationId",
+          "domain",
+          "createdAt"
+        ]
+      },
+      "AddAllowedDomainDto": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Email domain (e.g. acme.com)"
+          }
+        },
+        "required": [
+          "domain"
+        ]
+      },
+      "ProviderKeyResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Key ID"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Provider name"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true,
+            "description": "Label"
+          },
+          "key_hint": {
+            "type": "string",
+            "description": "Key hint (shows only the last 4 characters)",
+            "example": "...abcd"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the key is active"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created at"
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Updated at"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "key_hint",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "CreateProviderKeyDto": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "Provider name, e.g. anthropic, openai, openrouter, resend, twitter, exa",
+            "example": "anthropic"
+          },
+          "key": {
+            "type": "string",
+            "description": "API key (at least 8 characters)",
+            "example": "sk-ant-..."
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional label to distinguish multiple keys for the same provider",
+            "example": "Production key"
+          }
+        },
+        "required": [
+          "provider",
+          "key"
+        ]
+      },
+      "UpdateProviderKeyDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "New API key (leave empty to keep unchanged)"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the key is active"
+          }
+        }
+      },
+      "AgentResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "Associated Supabase user ID"
+          },
+          "organization_id": {
+            "type": "string",
+            "description": "Organization ID this agent belongs to"
+          },
+          "name": {
+            "type": "string",
+            "description": "Agent name"
+          },
+          "runtime": {
+            "type": "string",
+            "description": "Runtime type",
+            "default": "claude-code"
+          },
+          "session_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Session ID"
+          },
+          "model": {
+            "type": "string",
+            "nullable": true,
+            "description": "Model override"
+          },
+          "last_chat_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last chat timestamp"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom instructions for the agent"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent role (high-level responsibility)"
+          },
+          "personality": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent personality / tone"
+          },
+          "role_preset_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Role preset ID"
+          },
+          "personality_preset_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Personality preset ID"
+          },
+          "template_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Template ID this agent was created from"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "avatar_seed": {
+            "type": "string",
+            "nullable": true,
+            "description": "Avatar seed for DiceBear avatar generation"
+          },
+          "avatar_style": {
+            "type": "string",
+            "nullable": true,
+            "description": "DiceBear avatar style (e.g. adventurer, bottts, pixel-art)"
+          },
+          "is_test": {
+            "type": "boolean",
+            "description": "Whether this is a temporary test agent",
+            "default": false
+          },
+          "shared": {
+            "type": "boolean",
+            "description": "Whether this agent is shared with the organization",
+            "default": false
+          },
+          "creator_display_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Display name of agent creator (for shared agents from other users)"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "organization_id",
+          "name",
+          "runtime",
+          "created_at",
+          "is_test",
+          "shared"
+        ]
+      },
+      "OpencodeModelOptionsDto": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "description": "Available opencode model list",
+            "example": [
+              "gpt-4o-mini",
+              "gpt-4o"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultModel": {
+            "type": "string",
+            "description": "Default model",
+            "example": "gpt-4o-mini"
+          }
+        },
+        "required": [
+          "models",
+          "defaultModel"
+        ]
+      },
+      "PresetDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Preset ID",
+            "example": "backend-engineer"
+          },
+          "label": {
+            "type": "string",
+            "description": "Display label",
+            "example": "Backend Engineer"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short description",
+            "example": "APIs, databases, server-side logic"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "description"
+        ]
+      },
+      "PresetsResponseDto": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "description": "Role presets",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PresetDto"
+            }
+          },
+          "personalities": {
+            "description": "Personality presets",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PresetDto"
+            }
+          }
+        },
+        "required": [
+          "roles",
+          "personalities"
+        ]
+      },
+      "AgentInstallStatusDto": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Install status",
+            "enum": [
+              "installing",
+              "ready",
+              "failed"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Status message (optional)",
+            "nullable": true
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "CreateAgentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Agent name, 3-30 alphanumeric characters and hyphens, must start with a letter (stored lowercase)",
+            "example": "my-agent",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9-]{2,29}$"
+          },
+          "runtime": {
+            "type": "string",
+            "description": "Runtime type",
+            "default": "claude-code",
+            "enum": [
+              "claude-code",
+              "opencode",
+              "openclaw"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "description": "Model override (optional)",
+            "example": "claude-sonnet-4-20250514"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Custom instructions for the agent"
+          },
+          "role": {
+            "type": "string",
+            "description": "Agent role (high-level responsibility)"
+          },
+          "personality": {
+            "type": "string",
+            "description": "Agent personality / tone"
+          },
+          "role_preset_id": {
+            "type": "string",
+            "description": "Role preset ID (e.g. backend-engineer, frontend-engineer)"
+          },
+          "personality_preset_id": {
+            "type": "string",
+            "description": "Personality preset ID (e.g. concise, detailed, friendly)"
+          },
+          "template_id": {
+            "type": "string",
+            "description": "Template ID to create agent from. Template config is used as defaults; explicit fields override."
+          },
+          "avatar_seed": {
+            "type": "string",
+            "description": "Avatar seed for DiceBear avatar generation"
+          },
+          "avatar_style": {
+            "type": "string",
+            "description": "DiceBear avatar style (e.g. adventurer, bottts, pixel-art)"
+          },
+          "is_test": {
+            "type": "boolean",
+            "description": "Whether this is a temporary test agent (used by Workshop)",
+            "default": false
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateAgentDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Agent name, 3-30 alphanumeric characters and hyphens, must start with a letter (stored lowercase)",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9-]{2,29}$"
+          },
+          "runtime": {
+            "type": "string",
+            "description": "Runtime type",
+            "enum": [
+              "claude-code",
+              "opencode",
+              "openclaw"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "nullable": true,
+            "description": "Model override"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom instructions for the agent"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent role (high-level responsibility)"
+          },
+          "personality": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent personality / tone"
+          },
+          "role_preset_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Role preset ID (e.g. backend-engineer, frontend-engineer)"
+          },
+          "personality_preset_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Personality preset ID (e.g. concise, detailed, friendly)"
+          },
+          "avatar_seed": {
+            "type": "string",
+            "nullable": true,
+            "description": "Avatar seed for DiceBear avatar generation"
+          },
+          "avatar_style": {
+            "type": "string",
+            "nullable": true,
+            "description": "DiceBear avatar style (e.g. adventurer, bottts, pixel-art)"
+          },
+          "shared": {
+            "type": "boolean",
+            "description": "Share this agent with the organization"
+          }
+        }
+      },
+      "UploadFilesResponseDto": {
+        "type": "object",
+        "properties": {
+          "filePaths": {
+            "description": "Paths of uploaded files on the sprite filesystem",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of files uploaded"
+          }
+        },
+        "required": [
+          "filePaths",
+          "count"
+        ]
+      },
+      "FileMetadataDto": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Original filename"
+          },
+          "mediaType": {
+            "type": "string",
+            "description": "MIME type"
+          }
+        }
+      },
+      "ChatAgentDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message content to send to the agent"
+          },
+          "filePaths": {
+            "description": "Paths of previously uploaded files to include as context",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fileMetadata": {
+            "description": "Metadata for attached files (filename, mediaType). Persisted with the user message for display in chat history.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileMetadataDto"
+            }
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ChatSessionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Session ID"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Session title"
+          },
+          "last_message_seq": {
+            "type": "number",
+            "description": "Latest message sequence number"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created at"
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Updated at"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "agent_id",
+          "last_message_seq",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "ChatMessageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Message ID"
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Session ID"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "seq": {
+            "type": "number",
+            "description": "Sequence number within the session"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role",
+            "enum": [
+              "user",
+              "assistant",
+              "system"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "description": "Message content"
+          },
+          "client_msg_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Client message ID"
+          },
+          "parts": {
+            "type": "array",
+            "nullable": true,
+            "description": "Structured message parts (text/reasoning/tool-call)",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "id",
+          "session_id",
+          "user_id",
+          "agent_id",
+          "seq",
+          "role",
+          "content",
+          "created_at"
+        ]
+      },
+      "ChatHistoryDataDto": {
+        "type": "object",
+        "properties": {
+          "upserts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessageDto"
+            }
+          },
+          "deletes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "upserts",
+          "deletes"
+        ]
+      },
+      "ChatHistoryMergeDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "noop",
+              "merge",
+              "full"
+            ]
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Session ID"
+          },
+          "sync_token": {
+            "type": "number",
+            "description": "Latest sync token (seq)"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ChatHistoryDataDto"
+          }
+        },
+        "required": [
+          "type",
+          "session_id",
+          "sync_token",
+          "data"
+        ]
+      },
+      "TemplateResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Template ID"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "Associated user ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Template name"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Template description"
+          },
+          "runtime": {
+            "type": "string",
+            "description": "Runtime type",
+            "default": "claude-code"
+          },
+          "model": {
+            "type": "string",
+            "nullable": true,
+            "description": "Model override"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom instructions"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "description": "Default agent role for agents created from this template"
+          },
+          "personality": {
+            "type": "string",
+            "nullable": true,
+            "description": "Default agent personality for agents created from this template"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "name",
+          "runtime",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "CreateTemplateDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Template name (1-100 characters, unique per user)",
+            "example": "My Backend Agent"
+          },
+          "description": {
+            "type": "string",
+            "description": "Template description",
+            "example": "A template for backend development agents"
+          },
+          "runtime": {
+            "type": "string",
+            "description": "Runtime type",
+            "default": "claude-code",
+            "enum": [
+              "claude-code",
+              "opencode",
+              "openclaw"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "description": "Model override (optional)",
+            "example": "claude-sonnet-4-20250514"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Custom instructions for agents created from this template"
+          },
+          "role": {
+            "type": "string",
+            "description": "Default agent role for agents created from this template"
+          },
+          "personality": {
+            "type": "string",
+            "description": "Default agent personality for agents created from this template"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateTemplateDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Template name (1-100 characters, unique per user)"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Template description"
+          },
+          "runtime": {
+            "type": "string",
+            "description": "Runtime type",
+            "enum": [
+              "claude-code",
+              "opencode",
+              "openclaw"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "nullable": true,
+            "description": "Model override"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom instructions"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "description": "Default agent role for agents created from this template"
+          },
+          "personality": {
+            "type": "string",
+            "nullable": true,
+            "description": "Default agent personality for agents created from this template"
+          }
+        }
+      },
+      "ModelPricingDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model identifier",
+            "example": "claude-sonnet-4-20250514"
+          },
+          "input_cents_per_1m": {
+            "type": "number",
+            "description": "Input cost in cents per 1M tokens"
+          },
+          "output_cents_per_1m": {
+            "type": "number",
+            "description": "Output cost in cents per 1M tokens"
+          },
+          "cache_read_cents_per_1m": {
+            "type": "number",
+            "description": "Cache read cost in cents per 1M tokens"
+          },
+          "cache_write_cents_per_1m": {
+            "type": "number",
+            "description": "Cache write cost in cents per 1M tokens"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether this pricing entry is active"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "id",
+          "model",
+          "input_cents_per_1m",
+          "output_cents_per_1m",
+          "cache_read_cents_per_1m",
+          "cache_write_cents_per_1m",
+          "is_active",
+          "created_at"
+        ]
+      },
+      "CreateModelPricingDto": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model identifier",
+            "example": "claude-sonnet-4-20250514"
+          },
+          "input_cents_per_1m": {
+            "type": "number",
+            "description": "Input cost in cents per 1M tokens",
+            "example": 300
+          },
+          "output_cents_per_1m": {
+            "type": "number",
+            "description": "Output cost in cents per 1M tokens",
+            "example": 1500
+          },
+          "cache_read_cents_per_1m": {
+            "type": "number",
+            "description": "Cache read cost in cents per 1M tokens",
+            "example": 30,
+            "default": 0
+          },
+          "cache_write_cents_per_1m": {
+            "type": "number",
+            "description": "Cache write cost in cents per 1M tokens",
+            "example": 375,
+            "default": 0
+          }
+        },
+        "required": [
+          "model",
+          "input_cents_per_1m",
+          "output_cents_per_1m"
+        ]
+      },
+      "UpdateModelPricingDto": {
+        "type": "object",
+        "properties": {
+          "input_cents_per_1m": {
+            "type": "number",
+            "description": "Input cost in cents per 1M tokens"
+          },
+          "output_cents_per_1m": {
+            "type": "number",
+            "description": "Output cost in cents per 1M tokens"
+          },
+          "cache_read_cents_per_1m": {
+            "type": "number",
+            "description": "Cache read cost in cents per 1M tokens"
+          },
+          "cache_write_cents_per_1m": {
+            "type": "number",
+            "description": "Cache write cost in cents per 1M tokens"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether this pricing entry is active"
+          }
+        }
+      },
+      "DashboardOverviewDto": {
+        "type": "object",
+        "properties": {
+          "totalUsers": {
+            "type": "number",
+            "description": "Total registered users"
+          },
+          "totalAgents": {
+            "type": "number",
+            "description": "Total agents created"
+          },
+          "totalRevenueCents": {
+            "type": "number",
+            "description": "Total revenue in cents"
+          },
+          "totalTokens": {
+            "type": "number",
+            "description": "Total tokens consumed (input + output)"
+          },
+          "activeUsers7d": {
+            "type": "number",
+            "description": "Active users in the last 7 days"
+          },
+          "activeUsers30d": {
+            "type": "number",
+            "description": "Active users in the last 30 days"
+          },
+          "newUsers7d": {
+            "type": "number",
+            "description": "New users in the last 7 days"
+          },
+          "newUsers30d": {
+            "type": "number",
+            "description": "New users in the last 30 days"
+          }
+        },
+        "required": [
+          "totalUsers",
+          "totalAgents",
+          "totalRevenueCents",
+          "totalTokens",
+          "activeUsers7d",
+          "activeUsers30d",
+          "newUsers7d",
+          "newUsers30d"
+        ]
+      },
+      "DailyUsageItemDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format",
+            "example": "2026-02-20"
+          },
+          "costCents": {
+            "type": "number",
+            "description": "Total cost in cents for the day"
+          },
+          "tokens": {
+            "type": "number",
+            "description": "Total tokens (input + output) for the day"
+          },
+          "requests": {
+            "type": "number",
+            "description": "Number of API requests for the day"
+          },
+          "activeUsers": {
+            "type": "number",
+            "description": "Distinct active users for the day"
+          }
+        },
+        "required": [
+          "date",
+          "costCents",
+          "tokens",
+          "requests",
+          "activeUsers"
+        ]
+      },
+      "DailyUsageResponseDto": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyUsageItemDto"
+            }
+          }
+        },
+        "required": [
+          "days"
+        ]
+      },
+      "TopUserDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "User email"
+          },
+          "tier": {
+            "type": "string",
+            "description": "User tier (free/standard)"
+          },
+          "creditBalanceCents": {
+            "type": "number",
+            "description": "Credit balance in cents"
+          },
+          "costCents": {
+            "type": "number",
+            "description": "Total cost in cents for the period"
+          },
+          "tokens": {
+            "type": "number",
+            "description": "Total tokens consumed in the period"
+          },
+          "agentCount": {
+            "type": "number",
+            "description": "Number of agents owned"
+          },
+          "lastActive": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last activity timestamp"
+          }
+        },
+        "required": [
+          "userId",
+          "tier",
+          "creditBalanceCents",
+          "costCents",
+          "tokens",
+          "agentCount"
+        ]
+      },
+      "TopUsersResponseDto": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopUserDto"
+            }
+          }
+        },
+        "required": [
+          "users"
+        ]
+      },
+      "UserRunningTimeDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "User email"
+          },
+          "runningSeconds": {
+            "type": "number",
+            "description": "Total running time in seconds"
+          },
+          "agentCount": {
+            "type": "number",
+            "description": "Number of agents"
+          }
+        },
+        "required": [
+          "userId",
+          "runningSeconds",
+          "agentCount"
+        ]
+      },
+      "UserRunningTimeResponseDto": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRunningTimeDto"
+            }
+          }
+        },
+        "required": [
+          "users"
+        ]
+      },
+      "AgentRunningTimeDto": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "agentName": {
+            "type": "string",
+            "description": "Agent name"
+          },
+          "spriteName": {
+            "type": "string",
+            "description": "Sprite name"
+          },
+          "runningSeconds": {
+            "type": "number",
+            "description": "Total running time in seconds"
+          }
+        },
+        "required": [
+          "agentId",
+          "agentName",
+          "spriteName",
+          "runningSeconds"
+        ]
+      },
+      "AgentRunningTimeResponseDto": {
+        "type": "object",
+        "properties": {
+          "agents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentRunningTimeDto"
+            }
+          }
+        },
+        "required": [
+          "agents"
+        ]
+      },
+      "SpriteStatusEntryDto": {
+        "type": "object",
+        "properties": {
+          "spriteName": {
+            "type": "string",
+            "description": "Sprite name"
+          },
+          "agentId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status at this transition"
+          },
+          "previousStatus": {
+            "type": "string",
+            "nullable": true,
+            "description": "Previous status"
+          },
+          "transitionedAt": {
+            "type": "string",
+            "description": "When the transition occurred"
+          }
+        },
+        "required": [
+          "spriteName",
+          "status",
+          "transitionedAt"
+        ]
+      },
+      "SpriteStatusHistoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpriteStatusEntryDto"
+            }
+          }
+        },
+        "required": [
+          "entries"
+        ]
+      },
+      "CurrentSpriteStatusDto": {
+        "type": "object",
+        "properties": {
+          "spriteName": {
+            "type": "string",
+            "description": "Sprite name"
+          },
+          "agentId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent ID"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status"
+          }
+        },
+        "required": [
+          "spriteName",
+          "userId",
+          "status"
+        ]
+      },
+      "CurrentSpriteStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "sprites": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrentSpriteStatusDto"
+            }
+          }
+        },
+        "required": [
+          "sprites"
+        ]
+      },
+      "UserProfileDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isInvited": {
+            "type": "boolean",
+            "description": "Whether the user has redeemed an invitation code"
+          }
+        },
+        "required": [
+          "displayName",
+          "username",
+          "email",
+          "avatarUrl",
+          "isInvited"
+        ]
+      },
+      "MarkInvitedResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "Display name (1-50 chars)"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username (4-30 chars, lowercase alphanumeric + hyphens, starts with letter)",
+            "pattern": "^[a-z][a-z0-9-]{3,29}$"
+          }
+        }
+      },
+      "UsernameAvailabilityDto": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "available"
+        ]
+      },
+      "FeedbackResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "CreateWebhookDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Webhook name (e.g. \"github-prs\", \"slack-alerts\")",
+            "example": "github-prs"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description",
+            "example": "Receives GitHub pull request events"
+          },
+          "secret": {
+            "type": "string",
+            "description": "HMAC secret for signature verification (optional)"
+          },
+          "signature_header": {
+            "type": "string",
+            "description": "Header name containing the HMAC signature",
+            "default": "x-hub-signature-256",
+            "example": "x-hub-signature-256"
+          },
+          "chat_message_template": {
+            "type": "string",
+            "description": "Custom chat message template. Use {{payload_file}} for the file path.",
+            "example": "New webhook event received from {{name}}. Payload saved to {{payload_file}}. Please review and take action."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "WebhookResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Webhook ID"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Unique URL slug"
+          },
+          "name": {
+            "type": "string",
+            "description": "Webhook name"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Description"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the webhook is enabled"
+          },
+          "signature_header": {
+            "type": "string",
+            "nullable": true,
+            "description": "Header name for HMAC signature"
+          },
+          "chat_message_template": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom chat message template"
+          },
+          "trigger_count": {
+            "type": "number",
+            "description": "Total number of times triggered"
+          },
+          "last_triggered_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last triggered timestamp"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created timestamp"
+          },
+          "url": {
+            "type": "string",
+            "description": "Full inbound webhook URL"
+          }
+        },
+        "required": [
+          "id",
+          "agent_id",
+          "slug",
+          "name",
+          "enabled",
+          "trigger_count",
+          "created_at",
+          "url"
+        ]
+      },
+      "CreateCronDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Cron name",
+            "example": "daily-summary"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description",
+            "example": "Summarize HackerNews top stories every 5 minutes"
+          },
+          "cron_schedule": {
+            "type": "string",
+            "description": "Cron expression (UTC)",
+            "example": "*/5 * * * *"
+          },
+          "chat_message": {
+            "type": "string",
+            "description": "Message to send to the agent when the cron fires. If omitted, a default message is used.",
+            "example": "Fetch the top 10 HackerNews stories and send a summary email to me."
+          }
+        },
+        "required": [
+          "name",
+          "cron_schedule"
+        ]
+      },
+      "CronResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Cron ID"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Cron name"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Description"
+          },
+          "cron_schedule": {
+            "type": "string",
+            "description": "Cron expression (UTC)",
+            "example": "*/5 * * * *"
+          },
+          "chat_message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Message sent to the agent on trigger"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the cron is enabled"
+          },
+          "run_count": {
+            "type": "number",
+            "description": "Total number of times triggered"
+          },
+          "last_run_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last run timestamp"
+          },
+          "next_run_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "Next scheduled run timestamp"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "agent_id",
+          "name",
+          "cron_schedule",
+          "enabled",
+          "run_count",
+          "created_at"
+        ]
+      },
+      "UpdateCronDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Cron name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description"
+          },
+          "cron_schedule": {
+            "type": "string",
+            "description": "Cron expression (UTC)",
+            "example": "0 9 * * *"
+          },
+          "chat_message": {
+            "type": "string",
+            "description": "Message to send to the agent when the cron fires"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Enable or disable the cron"
+          }
+        }
+      },
+      "CronRunResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Run ID"
+          },
+          "cron_id": {
+            "type": "string",
+            "description": "Cron ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status: running | delivered | failed"
+          },
+          "error_message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Error message if failed"
+          },
+          "started_at": {
+            "type": "string",
+            "description": "Run started at"
+          },
+          "finished_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "Run finished at"
+          }
+        },
+        "required": [
+          "id",
+          "cron_id",
+          "status",
+          "started_at"
+        ]
+      },
+      "SearchRequestDto": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Raw search query string"
+          },
+          "types": {
+            "type": "array",
+            "description": "Result types to include",
+            "items": {
+              "type": "string",
+              "enum": [
+                "messages",
+                "agents"
+              ]
+            }
+          },
+          "limitPerType": {
+            "type": "number",
+            "description": "Max results per type (default 20, max 50)"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "SearchQueryTermsDto": {
+        "type": "object",
+        "properties": {
+          "include": {
+            "description": "Included terms",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclude": {
+            "description": "Excluded terms",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "phrases": {
+            "description": "Quoted phrases",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "prefixes": {
+            "description": "Prefix terms (without *)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "include",
+          "exclude",
+          "phrases",
+          "prefixes"
+        ]
+      },
+      "SearchQueryFiltersDto": {
+        "type": "object",
+        "properties": {
+          "in": {
+            "description": "in: filters",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notIn": {
+            "description": "-in: filters",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "from": {
+            "description": "from: filters",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notFrom": {
+            "description": "-from: filters",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "with": {
+            "description": "with: filters",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notWith": {
+            "description": "-with: filters",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "before": {
+            "type": "string",
+            "description": "before: filter value"
+          },
+          "after": {
+            "type": "string",
+            "description": "after: filter value"
+          },
+          "on": {
+            "type": "string",
+            "description": "on: filter value"
+          },
+          "during": {
+            "type": "string",
+            "description": "during: filter value"
+          }
+        },
+        "required": [
+          "in",
+          "notIn",
+          "from",
+          "notFrom",
+          "with",
+          "notWith"
+        ]
+      },
+      "SearchParsedQueryDto": {
+        "type": "object",
+        "properties": {
+          "raw": {
+            "type": "string",
+            "description": "Original query string"
+          },
+          "terms": {
+            "$ref": "#/components/schemas/SearchQueryTermsDto"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/SearchQueryFiltersDto"
+          }
+        },
+        "required": [
+          "raw",
+          "terms",
+          "filters"
+        ]
+      },
+      "SearchMessageResultDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Message ID"
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "agent_name": {
+            "type": "string",
+            "description": "Agent name"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role",
+            "enum": [
+              "user",
+              "assistant",
+              "system"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "description": "Message content"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "id",
+          "agent_id",
+          "agent_name",
+          "role",
+          "content",
+          "created_at"
+        ]
+      },
+      "SearchAgentResultDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Agent ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Agent name"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Custom instructions"
+          },
+          "last_chat_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last chat timestamp"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Created at"
+          },
+          "avatar_seed": {
+            "type": "string",
+            "nullable": true,
+            "description": "Avatar seed"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "created_at"
+        ]
+      },
+      "SearchResultsDto": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchMessageResultDto"
+            }
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchAgentResultDto"
+            }
+          }
+        },
+        "required": [
+          "messages",
+          "agents"
+        ]
+      },
+      "SearchResponseDto": {
+        "type": "object",
+        "properties": {
+          "parsedQuery": {
+            "$ref": "#/components/schemas/SearchParsedQueryDto"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "results": {
+            "$ref": "#/components/schemas/SearchResultsDto"
+          }
+        },
+        "required": [
+          "parsedQuery",
+          "warnings",
+          "results"
+        ]
+      },
+      "ShareMessageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Chat message ID"
+          },
+          "role": {
+            "type": "string",
+            "description": "Message role"
+          },
+          "content": {
+            "type": "string",
+            "description": "Message content"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Message created timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "content",
+          "created_at"
+        ]
+      },
+      "ShareDetailDto": {
+        "type": "object",
+        "properties": {
+          "share_id": {
+            "type": "string",
+            "description": "Public share identifier used in share URL"
+          },
+          "chat_message_ids": {
+            "description": "Chat message ID array stored for this share",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Share creation timestamp"
+          },
+          "agent_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent name if available"
+          },
+          "agent_model": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent model if available"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShareMessageDto"
+            }
+          }
+        },
+        "required": [
+          "share_id",
+          "chat_message_ids",
+          "created_at",
+          "agent_name",
+          "agent_model",
+          "messages"
+        ]
+      },
+      "CreateShareDto": {
+        "type": "object",
+        "properties": {
+          "chat_message_ids": {
+            "description": "Chat message IDs to include in the share",
+            "example": [
+              "b6f2c940-f924-4f0a-a920-92c08ed50f1e"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "chat_message_ids"
+        ]
+      },
+      "ShareResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Internal share row ID"
+          },
+          "share_id": {
+            "type": "string",
+            "description": "Public share identifier used in share URL"
+          },
+          "chat_message_ids": {
+            "description": "Chat message IDs included in this share",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Share creation timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "share_id",
+          "chat_message_ids",
+          "created_at"
+        ]
+      },
+      "VerifyCodeDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The invitation code to verify",
+            "example": "INV-ABC12345"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "VerifyCodeResponseDto": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "Whether the code is valid and usable"
+          }
+        },
+        "required": [
+          "valid"
+        ]
+      },
+      "RedeemCodeDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The invitation code to redeem",
+            "example": "INV-ABC12345"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "RedeemCodeResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the code was successfully redeemed"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "CreateApiKeyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this API key",
+            "example": "my-cli-key"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Expiration date (ISO 8601). Null means never expires.",
+            "example": "2027-01-01T00:00:00Z"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CreateApiKeyResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "API key ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "API key name"
+          },
+          "keyPrefix": {
+            "type": "string",
+            "description": "First 12 chars of the key for identification",
+            "example": "bxk_a1b2c3d4"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last used timestamp"
+          },
+          "expiresAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Expiration timestamp"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Created timestamp"
+          },
+          "key": {
+            "type": "string",
+            "description": "Full API key. Only shown once on creation \u2014 store it securely.",
+            "example": "bxk_a1b2c3d4e5f6..."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "keyPrefix",
+          "createdAt",
+          "key"
+        ]
+      },
+      "ApiKeyResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "API key ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "API key name"
+          },
+          "keyPrefix": {
+            "type": "string",
+            "description": "First 12 chars of the key for identification",
+            "example": "bxk_a1b2c3d4"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last used timestamp"
+          },
+          "expiresAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Expiration timestamp"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Created timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "keyPrefix",
+          "createdAt"
+        ]
+      },
+      "CreateEnterpriseContactDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Contact email address"
+          },
+          "company": {
+            "type": "string",
+            "description": "Company name"
+          },
+          "message": {
+            "type": "string",
+            "description": "Message"
+          }
+        },
+        "required": [
+          "email",
+          "company"
+        ]
+      },
+      "EnterpriseContactResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "TranscribeResponseDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Transcribed text from the audio file"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
 }

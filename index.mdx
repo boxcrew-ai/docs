@@ -1,97 +1,54 @@
 ---
 title: "Introduction"
-description: "Welcome to the new home for your documentation"
+description: "Build and deploy AI agents in seconds"
 ---
 
-## Setting up
+BoxCrew is a multi-tenant AI agent platform. Create isolated agents running Claude Code, OpenCode, or OpenClaw inside sandboxed VMs — each with persistent filesystem, email, cron jobs, and webhook triggers.
 
-Get your documentation site up and running in minutes.
+## How it works
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+1. **Create an agent** — pick a runtime (Claude Code, OpenCode, or OpenClaw) and a name
+2. **Chat** — send messages via the dashboard, CLI, or API and get streaming responses
+3. **Automate** — set up cron jobs, webhooks, and email triggers to run agents on autopilot
 
-## Make it yours
+Each agent runs inside a [Fly Sprite](https://fly.io/docs/sprites/) VM with its own persistent filesystem. Agents can execute code, read and write files, send emails, and browse the web.
 
-Design a docs site that looks great and empowers your users.
+## Get started
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Create your first agent in under a minute.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Install the CLI" icon="terminal" href="/cli/installation">
+    Manage agents from your terminal with the bx CLI.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Integrate BoxCrew into your apps with the REST API.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="CLI commands" icon="rectangle-list" href="/cli/commands">
+    Full reference for all bx commands.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Key features
 
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+<CardGroup cols={3}>
+  <Card title="Streaming chat" icon="comments">
+    SSE-based real-time streaming with session management.
   </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
+  <Card title="File access" icon="folder-open">
+    Browse, upload, and read files on the agent's filesystem.
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
+  <Card title="Email" icon="envelope">
+    Each agent gets a unique email address for sending and receiving mail.
   </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
+  <Card title="Cron jobs" icon="clock">
+    Schedule recurring tasks with standard cron expressions.
   </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+  <Card title="Webhooks" icon="webhook">
+    Trigger agents from external services via unique webhook URLs.
+  </Card>
+  <Card title="Multi-runtime" icon="microchip">
+    Choose between Claude Code, OpenCode, and OpenClaw runtimes.
+  </Card>
+</CardGroup>

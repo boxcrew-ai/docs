@@ -1,33 +1,72 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "Introduction"
+description: "BoxCrew REST API overview"
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+Base URL: `https://api.boxcrew.ai`
 
-## Welcome
-
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
-
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+Interactive docs: [https://api.boxcrew.ai/docs](https://api.boxcrew.ai/docs)
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API endpoints require authentication via the `Authorization` header.
+
+### API key
+
+Create an API key from the [dashboard](https://boxcrew.ai) or with the [CLI](/cli/commands#create-a-key). Keys start with `bxk_`.
+
+```bash
+curl https://api.boxcrew.ai/agents \
+  -H "Authorization: Bearer bxk_your_key_here"
+```
+
+### Supabase JWT
+
+If you're building on top of BoxCrew's frontend auth, you can also use a Supabase access token directly:
+
+```bash
+curl https://api.boxcrew.ai/agents \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+```
+
+## Errors
+
+The API returns standard HTTP status codes. Error responses include a JSON body:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+{
+  "statusCode": 400,
+  "message": "Agent name must be 3-30 characters",
+  "error": "Bad Request"
+}
+```
+
+| Status | Meaning |
+|--------|---------|
+| `400` | Bad request — invalid parameters |
+| `401` | Unauthorized — missing or invalid auth |
+| `402` | Payment required — insufficient credits |
+| `403` | Forbidden — not allowed to access this resource |
+| `404` | Not found |
+| `409` | Conflict — resource already exists |
+| `429` | Rate limited |
+| `500` | Internal server error |
+
+## Streaming
+
+The `POST /agents/{name}/chat` endpoint returns an [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) stream. Use `curl -N` or an SSE client library to consume it:
+
+```bash
+curl -N -X POST https://api.boxcrew.ai/agents/my-agent/chat \
+  -H "Authorization: Bearer bxk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello"}'
+```
+
+Each event is a JSON object on a `data:` line:
+
+```
+data: {"type":"response.output_text.delta","delta":"Hello"}
+data: {"type":"response.output_text.delta","delta":"! How can I help?"}
+data: {"type":"response.completed"}
 ```

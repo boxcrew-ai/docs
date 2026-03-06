@@ -1,13 +1,14 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "BoxCrew",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4F46E5"
   },
   "favicon": "/favicon.svg",
+  "openapi": ["/api-reference/openapi.json"],
   "navigation": {
     "tabs": [
       {
@@ -17,52 +18,153 @@
             "group": "Getting started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "CLI",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "cli/installation",
+              "cli/commands"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Agents",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              { "openapi": "GET /agents" },
+              { "openapi": "POST /agents" },
+              { "openapi": "GET /agents/{name}" },
+              { "openapi": "PATCH /agents/{name}" },
+              { "openapi": "DELETE /agents/{name}" },
+              { "openapi": "GET /agents/{name}/install-status" },
+              { "openapi": "POST /agents/{name}/chat" },
+              { "openapi": "GET /agents/{name}/chat/stream" },
+              { "openapi": "POST /agents/{name}/reset" },
+              { "openapi": "POST /agents/{name}/stop" },
+              { "openapi": "GET /agents/active-chats" },
+              { "openapi": "GET /agents/presets" },
+              { "openapi": "GET /agents/claude-code/models" },
+              { "openapi": "GET /agents/opencode/models" },
+              { "openapi": "GET /agents/openclaw/models" }
+            ]
+          },
+          {
+            "group": "Agent files",
+            "pages": [
+              { "openapi": "GET /agents/{name}/files" },
+              { "openapi": "GET /agents/{name}/files/read" },
+              { "openapi": "POST /agents/{name}/files/upload" },
+              { "openapi": "DELETE /agents/{name}/files" }
+            ]
+          },
+          {
+            "group": "Agent emails",
+            "pages": [
+              { "openapi": "GET /agents/{name}/emails" },
+              { "openapi": "GET /agents/{name}/emails/sent" }
+            ]
+          },
+          {
+            "group": "Chat history",
+            "pages": [
+              { "openapi": "GET /chat/sessions" },
+              { "openapi": "GET /chat/sessions/{agentId}" },
+              { "openapi": "GET /chat/sessions/{agentId}/messages" }
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              { "openapi": "POST /agents/{name}/webhooks" },
+              { "openapi": "GET /agents/{name}/webhooks" },
+              { "openapi": "DELETE /agents/{name}/webhooks/{id}" }
+            ]
+          },
+          {
+            "group": "Crons",
+            "pages": [
+              { "openapi": "POST /agents/{name}/crons" },
+              { "openapi": "GET /agents/{name}/crons" },
+              { "openapi": "PATCH /agents/{name}/crons/{id}" },
+              { "openapi": "DELETE /agents/{name}/crons/{id}" },
+              { "openapi": "GET /agents/{name}/crons/{id}/runs" }
+            ]
+          },
+          {
+            "group": "API keys",
+            "pages": [
+              { "openapi": "POST /api-keys" },
+              { "openapi": "GET /api-keys" },
+              { "openapi": "DELETE /api-keys/{id}" }
+            ]
+          },
+          {
+            "group": "Billing",
+            "pages": [
+              { "openapi": "GET /billing" },
+              { "openapi": "POST /billing/checkout" },
+              { "openapi": "POST /billing/portal" }
+            ]
+          },
+          {
+            "group": "Organizations",
+            "pages": [
+              { "openapi": "GET /organizations" },
+              { "openapi": "POST /organizations" },
+              { "openapi": "GET /organizations/mine" },
+              { "openapi": "GET /organizations/joinable" },
+              { "openapi": "PATCH /organizations/{id}" },
+              { "openapi": "GET /organizations/{id}/members" },
+              { "openapi": "DELETE /organizations/{id}/members/{userId}" },
+              { "openapi": "POST /organizations/{id}/invites" },
+              { "openapi": "GET /organizations/{id}/invites" },
+              { "openapi": "DELETE /organizations/{id}/invites/{inviteId}" },
+              { "openapi": "GET /organizations/invites/{token}" },
+              { "openapi": "POST /organizations/invites/{token}/accept" },
+              { "openapi": "GET /organizations/my-invites" },
+              { "openapi": "POST /organizations/{id}/join" },
+              { "openapi": "POST /organizations/{id}/leave" },
+              { "openapi": "GET /organizations/{id}/allowed-domains" },
+              { "openapi": "POST /organizations/{id}/allowed-domains" },
+              { "openapi": "DELETE /organizations/{id}/allowed-domains/{domainId}" }
+            ]
+          },
+          {
+            "group": "Templates",
+            "pages": [
+              { "openapi": "GET /templates" },
+              { "openapi": "POST /templates" },
+              { "openapi": "GET /templates/{id}" },
+              { "openapi": "PATCH /templates/{id}" },
+              { "openapi": "DELETE /templates/{id}" }
+            ]
+          },
+          {
+            "group": "Models",
+            "pages": [
+              { "openapi": "GET /models" }
+            ]
+          },
+          {
+            "group": "User",
+            "pages": [
+              { "openapi": "GET /user/profile" },
+              { "openapi": "PATCH /user/profile" },
+              { "openapi": "POST /user/avatar" },
+              { "openapi": "DELETE /user/avatar" },
+              { "openapi": "GET /user/check-username/{username}" },
+              { "openapi": "POST /user/mark-invited" }
             ]
           }
         ]
@@ -71,14 +173,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "API Reference",
+          "href": "/api-reference/introduction",
+          "icon": "code"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "GitHub",
+          "href": "https://github.com/risingwavelabs/boxcrew",
+          "icon": "github"
         }
       ]
     }
@@ -91,32 +193,29 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@boxcrew.ai"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://boxcrew.ai"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/boxcrewai",
+      "github": "https://github.com/risingwavelabs/boxcrew"
     }
   }
 }

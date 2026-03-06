@@ -1,0 +1,145 @@
+---
+title: "Commands"
+description: "Complete reference for bx CLI commands"
+icon: "rectangle-list"
+---
+
+## bx agents
+
+Manage your agents.
+
+### List agents
+
+```bash
+bx agents list
+```
+
+Returns a table of all agents with name, runtime, model, and status.
+
+### Create an agent
+
+```bash
+bx agents create <name> [options]
+```
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-r, --runtime <runtime>` | Agent runtime | `claude-code` |
+| `-m, --model <model>` | Model override | Runtime default |
+| `-i, --instructions <text>` | Agent instructions | None |
+
+Available runtimes: `claude-code`, `opencode`, `openclaw`
+
+**Examples:**
+
+```bash
+# Create a Claude Code agent
+bx agents create my-agent
+
+# Create an OpenCode agent with a specific model
+bx agents create research-bot --runtime opencode --model gpt-4o
+
+# Create an agent with instructions
+bx agents create code-reviewer --instructions "Review code for security issues"
+```
+
+### Delete an agent
+
+```bash
+bx agents delete <name>
+```
+
+Permanently deletes the agent and its VM.
+
+### Chat with an agent
+
+```bash
+bx agents chat <name> <message>
+```
+
+Sends a message and streams the response in real-time.
+
+```bash
+bx agents chat my-agent "What files are in the current directory?"
+```
+
+---
+
+## bx keys
+
+Manage API keys.
+
+### List keys
+
+```bash
+bx keys list
+```
+
+Returns a table of all API keys with name, key prefix, creation date, and last used date.
+
+### Create a key
+
+```bash
+bx keys create [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `-n, --name <name>` | Human-readable name for the key |
+| `-e, --expires <date>` | Expiration date (ISO 8601 format) |
+
+**Examples:**
+
+```bash
+# Create a named key
+bx keys create --name "CI/CD Pipeline"
+
+# Create a key with expiration
+bx keys create --name "Temp Key" --expires "2026-12-31T00:00:00Z"
+```
+
+<Warning>
+The full key (starting with `bxk_`) is shown only once on creation. Store it securely.
+</Warning>
+
+### Revoke a key
+
+```bash
+bx keys revoke <id>
+```
+
+Permanently revokes the key. Use `bx keys list` to find the key ID.
+
+---
+
+## bx api
+
+Make raw API requests, similar to `gh api`.
+
+```bash
+bx api [options] <method> <path>
+```
+
+| Option | Description |
+|--------|-------------|
+| `-d, --data <json>` | JSON request body |
+| `-H, --header <header...>` | Additional headers (`key:value`) |
+
+**Examples:**
+
+```bash
+# List agents
+bx api GET /agents
+
+# Create an agent
+bx api POST /agents -d '{"name":"test-agent","runtime":"claude-code"}'
+
+# Get billing info
+bx api GET /billing
+
+# Delete an agent
+bx api DELETE /agents/my-agent
+
+# Check install status
+bx api GET /agents/my-agent/install-status
+```
