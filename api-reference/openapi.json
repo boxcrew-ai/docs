@@ -1,6 +1,55 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "AppController_getHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
+    "/protected": {
+      "get": {
+        "operationId": "AppController_getProtected",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "App"
+        ]
+      }
+    },
     "/billing": {
       "get": {
         "operationId": "BillingController_getBillingInfo",
@@ -829,6 +878,197 @@
         ]
       }
     },
+    "/admin/me": {
+      "get": {
+        "operationId": "ProviderKeysController_checkAdmin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Admin check",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "is_admin": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Check if the current user is an admin",
+        "tags": [
+          "admin/provider-keys"
+        ]
+      }
+    },
+    "/admin/provider-keys": {
+      "get": {
+        "operationId": "ProviderKeysController_listKeys",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderKeyResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all provider keys",
+        "tags": [
+          "admin/provider-keys"
+        ]
+      },
+      "post": {
+        "operationId": "ProviderKeysController_createKey",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProviderKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderKeyResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a provider key",
+        "tags": [
+          "admin/provider-keys"
+        ]
+      }
+    },
+    "/admin/provider-keys/{id}": {
+      "patch": {
+        "operationId": "ProviderKeysController_updateKey",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProviderKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderKeyResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          },
+          "404": {
+            "description": "Key not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a provider key",
+        "tags": [
+          "admin/provider-keys"
+        ]
+      },
+      "delete": {
+        "operationId": "ProviderKeysController_deleteKey",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Key deleted"
+          },
+          "403": {
+            "description": "Not admin"
+          },
+          "404": {
+            "description": "Key not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a provider key",
+        "tags": [
+          "admin/provider-keys"
+        ]
+      }
+    },
     "/models": {
       "get": {
         "operationId": "ModelsController_listModels",
@@ -1096,6 +1336,65 @@
         ]
       }
     },
+    "/agents/{name}/connection-config": {
+      "get": {
+        "operationId": "AgentsController_getConnectionConfig",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection configuration for local agent CLI",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "connection_token": {
+                      "type": "string"
+                    },
+                    "websocket_url": {
+                      "type": "string"
+                    },
+                    "agent_id": {
+                      "type": "string"
+                    },
+                    "agent_name": {
+                      "type": "string"
+                    },
+                    "runtime": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not a local agent"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get connection config for a local (BYOA) agent",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
     "/agents/{name}": {
       "get": {
         "operationId": "AgentsController_getAgent",
@@ -1335,7 +1634,7 @@
     },
     "/agents/{name}/chat": {
       "post": {
-        "description": "Send a message to the agent and receive a Server-Sent Events stream. The chat runs in the background \u2014 reconnect via GET :name/chat/stream. Event format follows the OpenAI Responses API streaming events (response.*).",
+        "description": "Send a message to the agent and receive a Server-Sent Events stream. The chat runs in the background — reconnect via GET :name/chat/stream. Event format follows the OpenAI Responses API streaming events (response.*).",
         "operationId": "AgentsController_chat",
         "parameters": [
           {
@@ -1614,6 +1913,34 @@
             "name": "path",
             "required": true,
             "in": "query",
+            "description": "Path to file or directory",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workingDir",
+            "required": false,
+            "in": "query",
+            "description": "Working directory for resolving relative paths",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recursive",
+            "required": false,
+            "in": "query",
+            "description": "Delete directory recursively (default true)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "asRoot",
+            "required": false,
+            "in": "query",
+            "description": "Execute delete as root (default false)",
             "schema": {
               "type": "string"
             }
@@ -1694,6 +2021,126 @@
           }
         ],
         "summary": "Read file content on agent (max 100KB)",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/files/rename": {
+      "post": {
+        "operationId": "AgentsController_renamePath",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenamePathDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid source/destination path"
+          },
+          "404": {
+            "description": "Agent or source path not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Rename or move a file/directory on agent filesystem",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/agents/{name}/files/copy": {
+      "post": {
+        "operationId": "AgentsController_copyPath",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CopyPathDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid source/destination path"
+          },
+          "404": {
+            "description": "Agent or source path not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Copy a file/directory on agent filesystem",
         "tags": [
           "agents"
         ]
@@ -2122,6 +2569,958 @@
         ]
       }
     },
+    "/proxy/unified/v1/chat/completions": {
+      "post": {
+        "description": "Routes to the correct upstream provider based on model name. Anthropic models are automatically converted between OpenAI and Anthropic formats. OpenAI, Google, and OpenRouter models are passed through as-is.",
+        "operationId": "UnifiedProxyController_chatCompletions",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer bxp_{userId}_{hmac}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat completion response (JSON or SSE stream)"
+          },
+          "201": {
+            "description": ""
+          },
+          "402": {
+            "description": "Insufficient credits"
+          },
+          "429": {
+            "description": "Rate limited"
+          }
+        },
+        "summary": "OpenAI-compatible chat completions (unified)",
+        "tags": [
+          "Unified Proxy"
+        ]
+      }
+    },
+    "/proxy/unified/v1/models": {
+      "get": {
+        "description": "Returns models from the pricing database in OpenAI-compatible format.",
+        "operationId": "UnifiedProxyController_listModels",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer bxp_{userId}_{hmac}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Model list"
+          }
+        },
+        "summary": "List available models",
+        "tags": [
+          "Unified Proxy"
+        ]
+      }
+    },
+    "/proxy/{provider}/{path}": {
+      "get": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_get",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      },
+      "post": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_post",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      },
+      "put": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_put",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      },
+      "delete": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_delete",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      },
+      "patch": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_patch",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      },
+      "options": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_options",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      },
+      "head": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_head",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      },
+      "search": {
+        "description": "Proxies requests to upstream providers (anthropic, openai, openrouter). Agents use this endpoint instead of calling provider APIs directly. Authentication is via proxy token (bxp_...), not Supabase JWT. LLM requests are subject to credit enforcement and usage tracking.",
+        "operationId": "ProxyController_proxyRequest_search",
+        "parameters": [
+          {
+            "name": "provider",
+            "required": true,
+            "in": "path",
+            "description": "AI provider name",
+            "schema": {
+              "enum": [
+                "anthropic",
+                "openai",
+                "openrouter"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Alternative: Bearer bxp_{userId}_{hmac}",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "Proxy token (bxp_{userId}_{hmac})",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upstream response (streamed)"
+          },
+          "401": {
+            "description": "Missing or invalid proxy token"
+          },
+          "402": {
+            "description": "Insufficient credits (LLM requests only)"
+          },
+          "404": {
+            "description": "Unknown provider"
+          }
+        },
+        "summary": "Forward request to upstream AI provider",
+        "tags": [
+          "Proxy"
+        ]
+      }
+    },
+    "/admin/model-pricing": {
+      "get": {
+        "operationId": "ModelPricingController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ModelPricingDto"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all model pricing entries",
+        "tags": [
+          "admin/model-pricing"
+        ]
+      },
+      "post": {
+        "operationId": "ModelPricingController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateModelPricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelPricingDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create model pricing entry",
+        "tags": [
+          "admin/model-pricing"
+        ]
+      }
+    },
+    "/admin/model-pricing/{id}": {
+      "patch": {
+        "operationId": "ModelPricingController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateModelPricingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelPricingDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          },
+          "404": {
+            "description": "Entry not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update model pricing entry",
+        "tags": [
+          "admin/model-pricing"
+        ]
+      },
+      "delete": {
+        "operationId": "ModelPricingController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Entry deleted"
+          },
+          "403": {
+            "description": "Not admin"
+          },
+          "404": {
+            "description": "Entry not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete model pricing entry",
+        "tags": [
+          "admin/model-pricing"
+        ]
+      }
+    },
+    "/admin/dashboard/overview": {
+      "get": {
+        "operationId": "AdminDashboardController_getOverview",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardOverviewDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get dashboard overview stats",
+        "tags": [
+          "admin/dashboard"
+        ]
+      }
+    },
+    "/admin/dashboard/usage-daily": {
+      "get": {
+        "operationId": "AdminDashboardController_getDailyUsage",
+        "parameters": [
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 30,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyUsageResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get daily usage aggregation",
+        "tags": [
+          "admin/dashboard"
+        ]
+      }
+    },
+    "/admin/dashboard/top-users": {
+      "get": {
+        "operationId": "AdminDashboardController_getTopUsers",
+        "parameters": [
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 30,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopUsersResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get top users by cost",
+        "tags": [
+          "admin/dashboard"
+        ]
+      }
+    },
+    "/admin/sprites/running-time/by-user": {
+      "get": {
+        "operationId": "SpriteMonitorController_getRunningTimeByUser",
+        "parameters": [
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 30,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserRunningTimeResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get total running time per user",
+        "tags": [
+          "admin/sprites"
+        ]
+      }
+    },
+    "/admin/sprites/running-time/by-agent": {
+      "get": {
+        "operationId": "SpriteMonitorController_getRunningTimeByAgent",
+        "parameters": [
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 30,
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentRunningTimeResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get running time per agent",
+        "tags": [
+          "admin/sprites"
+        ]
+      }
+    },
+    "/admin/sprites/status-history/{spriteName}": {
+      "get": {
+        "operationId": "SpriteMonitorController_getStatusHistory",
+        "parameters": [
+          {
+            "name": "spriteName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 100,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpriteStatusHistoryResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get status history for a sprite",
+        "tags": [
+          "admin/sprites"
+        ]
+      }
+    },
+    "/admin/sprites/current-status": {
+      "get": {
+        "operationId": "SpriteMonitorController_getCurrentStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentSpriteStatusResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not admin"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current status of all sprites",
+        "tags": [
+          "admin/sprites"
+        ]
+      }
+    },
     "/user/profile": {
       "get": {
         "operationId": "UsersController_getProfile",
@@ -2336,6 +3735,72 @@
         "summary": "Check username availability",
         "tags": [
           "user"
+        ]
+      }
+    },
+    "/feedback": {
+      "post": {
+        "operationId": "FeedbackController_submitFeedback",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "Feedback message"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "maxItems": 5,
+                    "description": "File attachments (max 5, 10MB each)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Submit user feedback",
+        "tags": [
+          "feedback"
         ]
       }
     },
@@ -2686,6 +4151,221 @@
         ]
       }
     },
+    "/search": {
+      "post": {
+        "operationId": "SearchController_search",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Search messages and agents",
+        "tags": [
+          "search"
+        ]
+      }
+    },
+    "/shares/{shareId}": {
+      "get": {
+        "operationId": "SharesController_getByShareId",
+        "parameters": [
+          {
+            "name": "shareId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get share detail by share ID",
+        "tags": [
+          "shares"
+        ]
+      }
+    },
+    "/shares": {
+      "post": {
+        "operationId": "SharesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShareDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShareResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a share from selected chat message IDs",
+        "tags": [
+          "shares"
+        ]
+      }
+    },
+    "/invitation-codes/verify": {
+      "post": {
+        "operationId": "InvitationCodesController_verifyCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyCodeResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyCodeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verify invitation code (no auth required)",
+        "tags": [
+          "invitation-codes"
+        ]
+      }
+    },
+    "/invitation-codes/redeem": {
+      "post": {
+        "operationId": "InvitationCodesController_redeemCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RedeemCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RedeemCodeResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RedeemCodeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Code is disabled or exhausted"
+          },
+          "404": {
+            "description": "Code not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Redeem invitation code (requires auth, updates is_invited)",
+        "tags": [
+          "invitation-codes"
+        ]
+      }
+    },
     "/api-keys": {
       "post": {
         "operationId": "ApiKeysController_create",
@@ -2745,7 +4425,7 @@
             "bearer": []
           }
         ],
-        "summary": "List all API keys for the current user",
+        "summary": "List all API keys for the current organization",
         "tags": [
           "api-keys"
         ]
@@ -2779,30 +4459,964 @@
           "api-keys"
         ]
       }
+    },
+    "/enterprise-contact": {
+      "post": {
+        "operationId": "EnterpriseContactController_submit",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnterpriseContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseContactResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnterpriseContactResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Submit an enterprise contact request",
+        "tags": [
+          "enterprise-contact"
+        ]
+      }
+    },
+    "/transcription": {
+      "post": {
+        "operationId": "TranscriptionController_transcribe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Audio file to transcribe (max 25MB)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscribeResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Transcribe audio file using OpenAI Whisper",
+        "tags": [
+          "transcription"
+        ]
+      }
+    },
+    "/im": {
+      "get": {
+        "operationId": "ImController_proxyRoot_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "post": {
+        "operationId": "ImController_proxyRoot_post",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "put": {
+        "operationId": "ImController_proxyRoot_put",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "delete": {
+        "operationId": "ImController_proxyRoot_delete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "patch": {
+        "operationId": "ImController_proxyRoot_patch",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "options": {
+        "operationId": "ImController_proxyRoot_options",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "head": {
+        "operationId": "ImController_proxyRoot_head",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "search": {
+        "operationId": "ImController_proxyRoot_search",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      }
+    },
+    "/api/im": {
+      "get": {
+        "operationId": "ImController_proxyRoot_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "post": {
+        "operationId": "ImController_proxyRoot_post",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "put": {
+        "operationId": "ImController_proxyRoot_put",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "delete": {
+        "operationId": "ImController_proxyRoot_delete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "patch": {
+        "operationId": "ImController_proxyRoot_patch",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "options": {
+        "operationId": "ImController_proxyRoot_options",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "head": {
+        "operationId": "ImController_proxyRoot_head",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "search": {
+        "operationId": "ImController_proxyRoot_search",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      }
+    },
+    "/im/{path}": {
+      "get": {
+        "operationId": "ImController_proxyOneLevel_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "post": {
+        "operationId": "ImController_proxyOneLevel_post",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "put": {
+        "operationId": "ImController_proxyOneLevel_put",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "delete": {
+        "operationId": "ImController_proxyOneLevel_delete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "patch": {
+        "operationId": "ImController_proxyOneLevel_patch",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "options": {
+        "operationId": "ImController_proxyOneLevel_options",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "head": {
+        "operationId": "ImController_proxyOneLevel_head",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "search": {
+        "operationId": "ImController_proxyOneLevel_search",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      }
+    },
+    "/api/im/{path}": {
+      "get": {
+        "operationId": "ImController_proxyOneLevel_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "post": {
+        "operationId": "ImController_proxyOneLevel_post",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "put": {
+        "operationId": "ImController_proxyOneLevel_put",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "delete": {
+        "operationId": "ImController_proxyOneLevel_delete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "patch": {
+        "operationId": "ImController_proxyOneLevel_patch",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "options": {
+        "operationId": "ImController_proxyOneLevel_options",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "head": {
+        "operationId": "ImController_proxyOneLevel_head",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "search": {
+        "operationId": "ImController_proxyOneLevel_search",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      }
+    },
+    "/im/{path}/{path}": {
+      "get": {
+        "operationId": "ImController_proxyAny_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "post": {
+        "operationId": "ImController_proxyAny_post",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "put": {
+        "operationId": "ImController_proxyAny_put",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "delete": {
+        "operationId": "ImController_proxyAny_delete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "patch": {
+        "operationId": "ImController_proxyAny_patch",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "options": {
+        "operationId": "ImController_proxyAny_options",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "head": {
+        "operationId": "ImController_proxyAny_head",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "search": {
+        "operationId": "ImController_proxyAny_search",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      }
+    },
+    "/api/im/{path}/{path}": {
+      "get": {
+        "operationId": "ImController_proxyAny_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "post": {
+        "operationId": "ImController_proxyAny_post",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "put": {
+        "operationId": "ImController_proxyAny_put",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "delete": {
+        "operationId": "ImController_proxyAny_delete",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "patch": {
+        "operationId": "ImController_proxyAny_patch",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "options": {
+        "operationId": "ImController_proxyAny_options",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "head": {
+        "operationId": "ImController_proxyAny_head",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      },
+      "search": {
+        "operationId": "ImController_proxyAny_search",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Im"
+        ]
+      }
+    },
+    "/orchestrations": {
+      "post": {
+        "operationId": "OrchestrationController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrchestrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new orchestration session",
+        "tags": [
+          "orchestrations"
+        ]
+      },
+      "get": {
+        "operationId": "OrchestrationController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrchestrationSessionResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List orchestration sessions",
+        "tags": [
+          "orchestrations"
+        ]
+      }
+    },
+    "/orchestrations/{id}": {
+      "get": {
+        "operationId": "OrchestrationController_getOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get orchestration session details",
+        "tags": [
+          "orchestrations"
+        ]
+      }
+    },
+    "/orchestrations/{id}/approve": {
+      "post": {
+        "operationId": "OrchestrationController_approve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveOrchestrationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Approve orchestration plan and start execution",
+        "tags": [
+          "orchestrations"
+        ]
+      }
+    },
+    "/orchestrations/{id}/reject": {
+      "post": {
+        "operationId": "OrchestrationController_reject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reject orchestration plan",
+        "tags": [
+          "orchestrations"
+        ]
+      }
+    },
+    "/orchestrations/{id}/cancel": {
+      "post": {
+        "operationId": "OrchestrationController_cancel",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationSessionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel orchestration session",
+        "tags": [
+          "orchestrations"
+        ]
+      }
+    },
+    "/orchestrations/{id}/stream": {
+      "get": {
+        "operationId": "OrchestrationController_stream",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SSE stream of orchestration events",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Subscribe to orchestration event stream (SSE)",
+        "tags": [
+          "orchestrations"
+        ]
+      }
     }
   },
   "info": {
     "title": "BoxCrew API",
-    "version": "1.0.0",
-    "description": "REST API for managing AI agents on BoxCrew."
+    "description": "BoxCrew backend API",
+    "version": "1.0",
+    "contact": {}
   },
   "tags": [],
-  "servers": [
-    {
-      "url": "https://api.boxcrew.ai"
-    }
-  ],
+  "servers": [],
   "components": {
     "securitySchemes": {
       "bearer": {
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "type": "http"
-      },
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "description": "API Key (bxk_...) or Supabase JWT"
       }
     },
     "schemas": {
@@ -2899,17 +5513,9 @@
           "type": {
             "type": "string",
             "enum": [
-              "subscription",
-              "credits",
               "upgrade"
             ],
-            "description": "Checkout type: subscription, credit top-up, or plan upgrade"
-          },
-          "amount": {
-            "type": "number",
-            "minimum": 500,
-            "maximum": 10000,
-            "description": "Top-up amount in cents. Only applicable when type=credits. Defaults to 500 ($5)."
+            "description": "Checkout type. Only plan upgrade is supported."
           },
           "upgradeToPlan": {
             "type": "string",
@@ -3464,6 +6070,11 @@
             "description": "Whether this is a temporary test agent",
             "default": false
           },
+          "email_address": {
+            "type": "string",
+            "nullable": true,
+            "description": "Agent email address (AgentMail inbox)"
+          },
           "shared": {
             "type": "boolean",
             "description": "Whether this agent is shared with the organization",
@@ -3473,6 +6084,35 @@
             "type": "string",
             "nullable": true,
             "description": "Display name of agent creator (for shared agents from other users)"
+          },
+          "agent_type": {
+            "type": "string",
+            "description": "Agent type: cloud (sprite-backed) or remote (BYOA)",
+            "default": "cloud",
+            "enum": [
+              "cloud",
+              "remote"
+            ]
+          },
+          "is_online": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether a local agent is currently connected via WebSocket"
+          },
+          "remote_os": {
+            "type": "string",
+            "nullable": true,
+            "description": "OS of the remote machine (e.g. \"darwin 25.3.0\")"
+          },
+          "remote_cwd": {
+            "type": "string",
+            "nullable": true,
+            "description": "Working directory on the remote machine"
+          },
+          "remote_hostname": {
+            "type": "string",
+            "nullable": true,
+            "description": "Hostname of the remote machine"
           }
         },
         "required": [
@@ -3483,7 +6123,8 @@
           "runtime",
           "created_at",
           "is_test",
-          "shared"
+          "shared",
+          "agent_type"
         ]
       },
       "OpencodeModelOptionsDto": {
@@ -3641,6 +6282,15 @@
             "type": "boolean",
             "description": "Whether this is a temporary test agent (used by Workshop)",
             "default": false
+          },
+          "agent_type": {
+            "type": "string",
+            "description": "Agent type: cloud (sprite-backed) or remote (BYOA)",
+            "default": "cloud",
+            "enum": [
+              "cloud",
+              "remote"
+            ]
           }
         },
         "required": [
@@ -3767,6 +6417,68 @@
         },
         "required": [
           "message"
+        ]
+      },
+      "RenamePathDto": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source file or directory path"
+          },
+          "dest": {
+            "type": "string",
+            "description": "Destination file or directory path"
+          },
+          "workingDir": {
+            "type": "string",
+            "description": "Working directory for resolving relative paths"
+          },
+          "asRoot": {
+            "type": "boolean",
+            "description": "Execute as root user",
+            "default": false
+          }
+        },
+        "required": [
+          "source",
+          "dest"
+        ]
+      },
+      "CopyPathDto": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source file or directory path"
+          },
+          "dest": {
+            "type": "string",
+            "description": "Destination file or directory path"
+          },
+          "workingDir": {
+            "type": "string",
+            "description": "Working directory for resolving relative paths"
+          },
+          "recursive": {
+            "type": "boolean",
+            "description": "Copy directories recursively",
+            "default": false
+          },
+          "preserveAttrs": {
+            "type": "boolean",
+            "description": "Preserve file attributes",
+            "default": false
+          },
+          "asRoot": {
+            "type": "boolean",
+            "description": "Execute as root user",
+            "default": false
+          }
+        },
+        "required": [
+          "source",
+          "dest"
         ]
       },
       "ChatSessionDto": {
@@ -5342,9 +8054,14 @@
             "type": "string",
             "description": "Created timestamp"
           },
+          "createdByUserId": {
+            "type": "string",
+            "nullable": true,
+            "description": "User ID of the key creator"
+          },
           "key": {
             "type": "string",
-            "description": "Full API key. Only shown once on creation \u2014 store it securely.",
+            "description": "Full API key. Only shown once on creation — store it securely.",
             "example": "bxk_a1b2c3d4e5f6..."
           }
         },
@@ -5385,6 +8102,11 @@
           "createdAt": {
             "type": "string",
             "description": "Created timestamp"
+          },
+          "createdByUserId": {
+            "type": "string",
+            "nullable": true,
+            "description": "User ID of the key creator"
           }
         },
         "required": [
@@ -5437,12 +8159,200 @@
         "required": [
           "text"
         ]
+      },
+      "CreateOrchestrationDto": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Task description"
+          },
+          "workerCount": {
+            "type": "number",
+            "description": "Number of worker agents",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "prompt",
+          "workerCount"
+        ]
+      },
+      "OrchestrationSubtaskResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "worker_agent_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "index": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "result_text": {
+            "type": "string",
+            "nullable": true
+          },
+          "error_message": {
+            "type": "string",
+            "nullable": true
+          },
+          "cost_cents": {
+            "type": "number"
+          },
+          "attempt": {
+            "type": "number"
+          },
+          "started_at": {
+            "type": "string",
+            "nullable": true
+          },
+          "completed_at": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "session_id",
+          "index",
+          "title",
+          "prompt",
+          "status",
+          "cost_cents",
+          "attempt",
+          "created_at"
+        ]
+      },
+      "OrchestrationSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "organization_id": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "original_prompt": {
+            "type": "string"
+          },
+          "worker_count": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "plan_json": {
+            "type": "object"
+          },
+          "verification_result": {
+            "type": "object"
+          },
+          "final_summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "error_message": {
+            "type": "string",
+            "nullable": true
+          },
+          "lead_agent_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "total_cost_cents": {
+            "type": "number"
+          },
+          "worker_timeout_ms": {
+            "type": "number"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "approved_at": {
+            "type": "string",
+            "nullable": true
+          },
+          "completed_at": {
+            "type": "string",
+            "nullable": true
+          },
+          "subtasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrchestrationSubtaskResponseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "organization_id",
+          "user_id",
+          "original_prompt",
+          "worker_count",
+          "status",
+          "total_cost_cents",
+          "worker_timeout_ms",
+          "created_at"
+        ]
+      },
+      "EditedSubtaskDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Subtask ID"
+          },
+          "title": {
+            "type": "string",
+            "description": "Updated title"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Updated prompt"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "ApproveOrchestrationDto": {
+        "type": "object",
+        "properties": {
+          "editedSubtasks": {
+            "description": "Edited subtasks (optional)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditedSubtaskDto"
+            }
+          }
+        }
       }
     }
-  },
-  "security": [
-    {
-      "BearerAuth": []
-    }
-  ]
+  }
 }

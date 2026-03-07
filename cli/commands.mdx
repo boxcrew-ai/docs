@@ -56,6 +56,67 @@ Permanently destroys the agent and its VM, including all files.
 
 ---
 
+## bx connect / disconnect / status / reconnect
+
+Connect your own machine as a BoxCrew agent (BYOA — Bring Your Own Agent). The agent runs locally and connects to BoxCrew via WebSocket so you can interact with it from the dashboard or API.
+
+### Connect a local agent
+
+```bash
+bx connect <agent-name> [options]
+```
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--claude-path <path>` | Path to the `claude` CLI binary | `claude` |
+
+Spawns a background daemon that connects to BoxCrew. State is stored in `~/.boxcrew/`:
+
+- `{agent-name}.meta.json` — connection metadata (PID, cwd, runtime)
+- `{agent-name}.log` — daemon logs
+- `{agent-name}.pid` — process ID
+
+```bash
+bx connect my-local-agent
+bx connect my-local-agent --claude-path /usr/local/bin/claude
+```
+
+### Disconnect a local agent
+
+```bash
+bx disconnect <agent-name>
+```
+
+Stops the background daemon for the given agent.
+
+### Show local agent status
+
+```bash
+bx status
+```
+
+Lists all locally connected agents with their status (online/offline), runtime, working directory, and PID.
+
+### Reconnect an agent
+
+```bash
+bx reconnect [agent-name] [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--all` | Reconnect all previously connected agents |
+| `--claude-path <path>` | Override the `claude` CLI path |
+
+Re-establishes a connection using stored metadata. Useful after a reboot or network interruption.
+
+```bash
+bx reconnect my-local-agent
+bx reconnect --all
+```
+
+---
+
 ## bx keys
 
 ### List keys

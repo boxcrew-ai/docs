@@ -56,7 +56,8 @@
               { "openapi": "GET /agents/presets" },
               { "openapi": "GET /agents/claude-code/models" },
               { "openapi": "GET /agents/opencode/models" },
-              { "openapi": "GET /agents/openclaw/models" }
+              { "openapi": "GET /agents/openclaw/models" },
+              { "openapi": "GET /agents/{name}/connection-config" }
             ]
           },
           {
@@ -65,7 +66,9 @@
               { "openapi": "GET /agents/{name}/files" },
               { "openapi": "GET /agents/{name}/files/read" },
               { "openapi": "POST /agents/{name}/files/upload" },
-              { "openapi": "DELETE /agents/{name}/files" }
+              { "openapi": "DELETE /agents/{name}/files" },
+              { "openapi": "POST /agents/{name}/files/rename" },
+              { "openapi": "POST /agents/{name}/files/copy" }
             ]
           },
           {
@@ -99,6 +102,18 @@
               { "openapi": "PATCH /agents/{name}/crons/{id}" },
               { "openapi": "DELETE /agents/{name}/crons/{id}" },
               { "openapi": "GET /agents/{name}/crons/{id}/runs" }
+            ]
+          },
+          {
+            "group": "Orchestrations",
+            "pages": [
+              { "openapi": "POST /orchestrations" },
+              { "openapi": "GET /orchestrations" },
+              { "openapi": "GET /orchestrations/{id}" },
+              { "openapi": "POST /orchestrations/{id}/approve" },
+              { "openapi": "POST /orchestrations/{id}/reject" },
+              { "openapi": "POST /orchestrations/{id}/cancel" },
+              { "openapi": "GET /orchestrations/{id}/stream" }
             ]
           },
           {
@@ -148,6 +163,13 @@
               { "openapi": "GET /templates/{id}" },
               { "openapi": "PATCH /templates/{id}" },
               { "openapi": "DELETE /templates/{id}" }
+            ]
+          },
+          {
+            "group": "Proxy",
+            "pages": [
+              { "openapi": "POST /proxy/unified/v1/chat/completions" },
+              { "openapi": "GET /proxy/unified/v1/models" }
             ]
           },
           {

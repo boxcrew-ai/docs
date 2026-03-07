@@ -20,22 +20,14 @@ Requires Node.js 20 or later. After installation, the `bx` command is available 
 bx login
 ```
 
-Opens your browser to the BoxCrew dashboard. Once you authenticate, an API key is created and saved to the CLI automatically — no copy-pasting.
+Opens your browser to the BoxCrew dashboard where you can copy your API key. Back in the terminal, paste the key when prompted.
+
+On headless environments (SSH, CI/CD), create an API key in the [dashboard](https://boxcrew.ai) under **Settings > API Keys** and paste it when prompted.
 
 | Flag | Description | Default |
 |------|-------------|---------|
 | `--api-url <url>` | Override the API URL | `https://api.boxcrew.ai` |
 | `--frontend-url <url>` | Override the frontend URL | `https://boxcrew.ai` |
-
-### Paste login (headless environments)
-
-For SSH, CI/CD, or machines without a browser:
-
-```bash
-bx login --paste
-```
-
-You'll be prompted to paste an API key. Create one first in the [dashboard](https://boxcrew.ai) under **Settings > API Keys**.
 
 ### Environment variables
 
