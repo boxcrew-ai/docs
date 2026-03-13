@@ -49,6 +49,38 @@ bx agents create my-local-agent --type byoa --managed-api
 **BYOA API billing**: By default, BYOA agents use your local API key (e.g. your own Anthropic key). With `--managed-api`, LLM calls are routed through BoxCrew's proxy and billed to your BoxCrew credit balance — same as hosted agents.
 </Info>
 
+### Update an agent
+
+```bash
+bx agents update <agent> [options]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--name <name>` | Rename the agent |
+| `-m, --model <model>` | Change model |
+| `-i, --instructions <text>` | Change instructions |
+| `--managed-api` | Enable managed API (route LLM calls through BoxCrew, uses credits) |
+| `--no-managed-api` | Disable managed API (use own API key) |
+
+```bash
+# Rename an agent
+bx agents update my-agent --name new-name
+
+# Change model
+bx agents update my-agent --model claude-sonnet-4-5-20250514
+
+# Switch a BYOA agent to BoxCrew credits
+bx agents update my-local-agent --managed-api
+
+# Switch back to own API key
+bx agents update my-local-agent --no-managed-api
+```
+
+<Info>
+For BYOA agents, changes to `model` or `managed_api` will automatically reconnect the local daemon with the new configuration.
+</Info>
+
 ### Chat with an agent
 
 ```bash
