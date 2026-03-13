@@ -56,38 +56,52 @@ Permanently destroys the agent and its VM, including all files.
 
 ---
 
-## bx connect / disconnect / status / reconnect
+## bx agents connect / disconnect
 
 Connect your own machine as a BoxCrew agent (BYOA — Bring Your Own Agent). The agent runs locally and connects to BoxCrew via WebSocket so you can interact with it from the dashboard or API.
 
 ### Connect a local agent
 
 ```bash
-bx connect <agent-name> [options]
+bx agents connect <agent-name> [options]
 ```
 
 | Option | Description | Default |
 |--------|-------------|---------|
+| `-d, --dir <path>` | Working directory for the agent | `~/.boxcrew/agents/<name>` |
 | `--claude-path <path>` | Path to the `claude` CLI binary | `claude` |
+| `--all` | Reconnect all previously connected agents | |
 
-Spawns a background daemon that connects to BoxCrew. State is stored in `~/.boxcrew/`:
+Spawns a background daemon that connects to BoxCrew. If no `--dir` is specified, a default workspace is automatically created at `~/.boxcrew/agents/<name>/`.
 
-- `{agent-name}.meta.json` — connection metadata (PID, cwd, runtime)
-- `{agent-name}.log` — daemon logs
-- `{agent-name}.pid` — process ID
+State files are stored in `~/.boxcrew/`:
+
+- `{agentId}.meta.json` — connection metadata (PID, cwd, runtime)
+- `{agentId}.log` — daemon logs
+- `{agentId}.pid` — process ID
 
 ```bash
-bx connect my-local-agent
-bx connect my-local-agent --claude-path /usr/local/bin/claude
+# Connect with default workspace
+bx agents connect my-local-agent
+
+# Connect using an existing project directory
+bx agents connect my-local-agent --dir ~/code/my-project
+
+# Reconnect all previously connected agents
+bx agents connect --all
 ```
 
 ### Disconnect a local agent
 
 ```bash
-bx disconnect <agent-name>
+bx agents disconnect <agent-name>
 ```
 
 Stops the background daemon for the given agent.
+
+```bash
+bx agents disconnect --all
+```
 
 ### Show local agent status
 
@@ -96,24 +110,6 @@ bx status
 ```
 
 Lists all locally connected agents with their status (online/offline), runtime, working directory, and PID.
-
-### Reconnect an agent
-
-```bash
-bx reconnect [agent-name] [options]
-```
-
-| Option | Description |
-|--------|-------------|
-| `--all` | Reconnect all previously connected agents |
-| `--claude-path <path>` | Override the `claude` CLI path |
-
-Re-establishes a connection using stored metadata. Useful after a reboot or network interruption.
-
-```bash
-bx reconnect my-local-agent
-bx reconnect --all
-```
 
 ---
 
