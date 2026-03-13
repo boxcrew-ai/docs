@@ -25,14 +25,29 @@ bx agents create <name> [options]
 | `-r, --runtime <runtime>` | Runtime: `claude-code`, `opencode`, or `openclaw` | `claude-code` |
 | `-m, --model <model>` | Model override | Runtime default |
 | `-i, --instructions <text>` | System instructions for the agent | None |
+| `-t, --type <type>` | Agent type: `hosted` or `byoa` | `hosted` |
+| `-d, --directory <path>` | Working directory (BYOA only) | `~/.boxcrew/agents/<name>` |
+| `--claude-path <path>` | Path to claude CLI binary (BYOA only) | `claude` |
+| `--managed-api` | Route LLM calls through BoxCrew using credits (BYOA only) | Off (uses local API key) |
 
 Agent names must be 3–30 characters, start with a letter, and contain only letters, numbers, and hyphens.
 
 ```bash
+# Create a hosted agent
 bx agents create my-agent
 bx agents create research-bot --runtime opencode --model gpt-4o
 bx agents create reviewer --instructions "Review code for security issues"
+
+# Create a BYOA agent (uses your local API key by default)
+bx agents create my-local-agent --type byoa
+
+# Create a BYOA agent that uses BoxCrew credits instead of local key
+bx agents create my-local-agent --type byoa --managed-api
 ```
+
+<Info>
+**BYOA API billing**: By default, BYOA agents use your local API key (e.g. your own Anthropic key). With `--managed-api`, LLM calls are routed through BoxCrew's proxy and billed to your BoxCrew credit balance — same as hosted agents.
+</Info>
 
 ### Chat with an agent
 
